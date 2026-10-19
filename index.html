@@ -1,0 +1,1027 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Woordkaarten</title>
+<meta name="description" content="Dutch B1–B2 flashcards">
+<meta name="theme-color" content="#F4F6FA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0D1524" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Woordkaarten">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;-webkit-text-size-adjust:100%}img{max-width:100%}[hidden]{display:none!important}button{-webkit-tap-highlight-color:transparent}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,600;7..72,700&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style id="mainStyle">
+/* Layout: one narrow study column — tabs on top, the card as the hero, list and exercises below. Delft-blue ink on cool porcelain. */
+:root{
+  --bg:#F4F6FA; --surface:#FFFFFF; --sunk:#E9EEF6; --line:#D3DCE8;
+  --ink:#14233D; --muted:#5A6A82; --delft:#1F4E9C; --delft-soft:#DDE7F6;
+  --het:#A8661A; --het-soft:#F6E9D6; --ok:#2E7A4E; --ok-soft:#DDF0E4; --bad:#B03F38; --bad-soft:#F7E0DE;
+  --shadow:0 1px 2px rgba(20,35,61,.06),0 8px 24px rgba(20,35,61,.08);
+  --f-word:"Literata",Georgia,"Times New Roman",serif;
+  --f-ui:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0D1524; --surface:#152038; --sunk:#1B2944; --line:#2A3A5A;
+  --ink:#E4EAF4; --muted:#9AA9C2; --delft:#86ABEB; --delft-soft:#22365D;
+  --het:#E0A35A; --het-soft:#3D2E1C; --ok:#6CC594; --ok-soft:#1C3A2B; --bad:#EE8A82; --bad-soft:#42221F;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D1524; --surface:#152038; --sunk:#1B2944; --line:#2A3A5A;
+  --ink:#E4EAF4; --muted:#9AA9C2; --delft:#86ABEB; --delft-soft:#22365D;
+  --het:#E0A35A; --het-soft:#3D2E1C; --ok:#6CC594; --ok-soft:#1C3A2B; --bad:#EE8A82; --bad-soft:#42221F;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-ui);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--delft);outline-offset:2px}
+h1,h2,h3{margin:0;text-wrap:balance}
+.top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--f-word);font-weight:700;font-size:26px;letter-spacing:-.01em}
+.brand small{font-family:var(--f-mono);font-size:11px;font-weight:500;color:var(--delft);letter-spacing:.08em;margin-left:8px;vertical-align:4px;border:1px solid var(--delft);border-radius:4px;padding:1px 5px}
+.store{font-size:12px;color:var(--muted)}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line)}
+.tab{background:none;border:0;padding:10px 14px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--delft)}
+.tab .n{font-family:var(--f-mono);font-size:11px;font-weight:500;background:var(--sunk);border-radius:10px;padding:1px 7px;margin-left:4px}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 14px;font-weight:600}
+.btn:hover{border-color:var(--delft)}
+.btn.primary{background:var(--delft);border-color:var(--delft);color:var(--bg)}
+.btn.ghost{background:none;border-color:transparent;color:var(--muted)}
+.btn:disabled{opacity:.5;cursor:default}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted)}
+.label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.note{font-size:13px;color:var(--muted)}
+
+/* Leitner boxes */
+.boxes{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.bx{background:var(--sunk);border-radius:6px;padding:6px 8px;display:flex;justify-content:space-between;align-items:baseline;font-size:12px;color:var(--muted)}
+.bx b{font-family:var(--f-mono);font-weight:500;color:var(--ink);font-size:14px;font-variant-numeric:tabular-nums}
+
+/* The card (also lives in the floating window) */
+#floatCard{display:flex;flex-direction:column;gap:10px;height:100%}
+.fc-top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.fc-top .mono{font-family:var(--f-mono)}
+.card{position:relative;flex:1;min-height:230px;perspective:1200px;cursor:pointer;border:0;background:none;padding:0;text-align:left}
+.card-in{position:absolute;inset:0;transition:transform .45s cubic-bezier(.3,.7,.2,1);transform-style:preserve-3d}
+.card.flipped .card-in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:20px 22px;display:flex;flex-direction:column;justify-content:center;gap:10px;overflow:auto}
+.face.back{transform:rotateY(180deg);justify-content:flex-start}
+.face::after{content:"";position:absolute;left:22px;right:22px;bottom:0;height:4px;border-radius:4px 4px 0 0;background:var(--delft)}
+.card.het .face::after{background:var(--het)}
+.art{font-family:var(--f-mono);font-size:13px;padding:2px 7px;border-radius:5px;background:var(--delft-soft);color:var(--delft);margin-right:8px;vertical-align:6px}
+.art.het{background:var(--het-soft);color:var(--het)}
+.wd{font-family:var(--f-word);font-size:clamp(26px,7vw,38px);font-weight:600;line-height:1.15;overflow-wrap:anywhere}
+.ty{font-size:12px;color:var(--muted)}
+.hint{font-size:12px;color:var(--muted);margin-top:auto}
+.en{font-family:var(--f-word);font-size:22px;font-weight:600;line-height:1.25}
+.meta{display:flex;flex-direction:column;gap:4px;font-size:13.5px}
+.meta div span{color:var(--muted)}
+.ex{font-family:var(--f-word);font-size:15.5px;line-height:1.45;border-left:2px solid var(--line);padding-left:10px}
+.ex mark{background:var(--delft-soft);color:inherit;padding:0 2px;border-radius:3px}
+.ex small{display:block;font-family:var(--f-ui);font-size:12.5px;color:var(--muted);margin-top:2px}
+.fc-ctl{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rate{border-radius:10px;padding:10px;font-weight:700;border:1px solid transparent}
+.rate.no{background:var(--bad-soft);color:var(--bad)}
+.rate.yes{background:var(--ok-soft);color:var(--ok)}
+.fc-sub{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:12.5px}
+.switch{display:inline-flex;align-items:center;gap:6px;color:var(--muted)}
+.switch select{background:var(--sunk);border:1px solid var(--line);border-radius:6px;padding:2px 4px;font-size:12.5px}
+.pbar{height:3px;background:var(--sunk);border-radius:3px;overflow:hidden}
+.pbar i{display:block;height:100%;width:0;background:var(--delft)}
+.empty{text-align:center;padding:36px 16px;display:flex;flex-direction:column;gap:12px;align-items:center}
+.empty .wd{font-size:28px}
+
+/* Words list */
+textarea{width:100%;min-height:96px;border:1px solid var(--line);border-radius:8px;background:var(--bg);padding:10px;resize:vertical;font-size:16px}
+input[type=text],input[type=search]{border:1px solid var(--line);border-radius:8px;background:var(--bg);padding:8px 10px;width:100%;font-size:16px}
+select{font-size:16px}
+.touch-hint{display:none}
+@media (hover:none) and (pointer:coarse){
+  .kbd-hint{display:none}.touch-hint{display:inline}
+  .tab{padding:12px 14px;flex:1}
+  .rate{padding:14px}
+  .card{touch-action:pan-y}
+  .iconbtn{padding:8px 10px}
+}
+.card.swipe-r .face{box-shadow:0 0 0 2px var(--ok),var(--shadow)}
+.card.swipe-l .face{box-shadow:0 0 0 2px var(--bad),var(--shadow)}
+.wl{display:flex;flex-direction:column}
+.wi{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.wi:last-child{border-bottom:0}
+.wi .w{font-family:var(--f-word);font-weight:600;font-size:17px;min-width:0;overflow-wrap:anywhere}
+.wi .d{font-size:13px;color:var(--muted);grid-column:1/-1;min-width:0}
+.wi .acts{display:flex;gap:4px;align-items:center}
+.lv{font-family:var(--f-mono);font-size:11px;color:var(--muted);background:var(--sunk);border-radius:4px;padding:1px 6px}
+.iconbtn{background:none;border:0;color:var(--muted);padding:4px 6px;border-radius:6px;font-size:13px}
+.iconbtn:hover{color:var(--ink);background:var(--sunk)}
+.edit{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.edit .full{grid-column:1/-1}
+.edit label{display:flex;flex-direction:column;gap:2px;font-size:12px;color:var(--muted)}
+
+/* Exercises */
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:20px;padding:4px 11px;font-size:13px}
+.chip[aria-pressed="true"]{background:var(--delft-soft);border-color:var(--delft);color:var(--delft);font-weight:600}
+.mix{border:1px solid var(--line);background:var(--bg);border-radius:20px;padding:3px 10px;font-size:13px;display:inline-flex;gap:6px;align-items:center}
+.mix.focus{border-color:var(--bad);background:var(--bad-soft)}
+.mix i{font-style:normal;font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.mix.focus i{color:var(--bad)}
+.res{display:flex;flex-direction:column;width:100%;text-align:left}
+.res-row{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.res-row:last-child{border-bottom:0}
+.res-row .w{font-family:var(--f-word);font-weight:600;font-size:16px;min-width:0;overflow-wrap:anywhere}
+.res-row .sc{font-family:var(--f-mono);font-size:12px;font-variant-numeric:tabular-nums}
+.res-row .sc .g{color:var(--ok)} .res-row .sc .f{color:var(--bad)}
+.filebtn{display:inline-flex;align-items:center;font-size:13px;padding:6px 11px}
+.seg{display:inline-flex;background:var(--sunk);border-radius:9px;padding:3px;gap:2px}
+.seg button{border:0;background:none;padding:6px 12px;border-radius:7px;font-weight:600;color:var(--muted);font-size:13.5px}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(20,35,61,.12)}
+.seg .n{font-family:var(--f-mono);font-size:11px;font-weight:500;margin-left:3px}
+.grp{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.grp-h{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.gt{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;border-radius:4px;padding:2px 7px;font-weight:500}
+.gt.syn{background:var(--ok-soft);color:var(--ok)} .gt.ant{background:var(--bad-soft);color:var(--bad)} .gt.verwar{background:var(--het-soft);color:var(--het)}
+.gw{font-family:var(--f-word);font-weight:600;font-size:17px}
+.gw + .gw::before{content:"·";color:var(--muted);margin:0 8px 0 0;font-weight:400}
+.gnote{font-size:14px;line-height:1.5}
+.gex{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:14px}
+.gex b{font-family:var(--f-word);font-weight:600}
+.gex span{font-family:var(--f-word)} .gex small{display:block;font-family:var(--f-ui);color:var(--muted);font-size:12.5px}
+.rel{font-size:13px;border-top:1px solid var(--line);padding-top:8px;display:flex;flex-direction:column;gap:4px}
+.rel .t{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;color:var(--muted);margin-right:6px}
+.rel .vn{color:var(--muted);font-size:12.5px}
+.known{color:var(--ok);font-weight:600;font-size:13px;display:inline-flex;gap:6px;align-items:center}
+.ex-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.ex-q{font-family:var(--f-word);font-size:19px;line-height:1.45}
+.ex-q .blank{display:inline-block;min-width:3.5em;border-bottom:2px solid var(--delft);text-align:center;color:var(--delft);font-weight:600}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:10px 12px;font-family:var(--f-word);font-size:16px}
+.opt:hover:not(:disabled){border-color:var(--delft)}
+.opt.right{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.opt:disabled{cursor:default}
+.tok-line{min-height:46px;border:1px dashed var(--line);border-radius:9px;padding:8px;display:flex;flex-wrap:wrap;gap:6px}
+.tok{border:1px solid var(--line);background:var(--surface);border-radius:7px;padding:5px 10px;font-family:var(--f-word);font-size:16px}
+.tok.used{opacity:.3}
+.fb{border-radius:9px;padding:10px 12px;font-size:14px}
+.fb.ok{background:var(--ok-soft)} .fb.no{background:var(--bad-soft)}
+.fb b{display:block}
+.fb .sol{font-family:var(--f-word);font-size:15.5px;margin-top:4px}
+.qtype{font-family:var(--f-mono);font-size:11px;color:var(--delft);letter-spacing:.06em}
+.score{font-family:var(--f-word);font-size:40px;font-weight:700;font-variant-numeric:tabular-nums}
+.thinking{display:flex;align-items:center;gap:10px;color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--delft);animation:pulse 1s infinite alternate}
+@keyframes pulse{from{opacity:.25}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.card-in{transition:none}.dot{animation:none}}
+.confirm{display:flex;gap:6px;align-items:center;font-size:13px}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;z-index:20;max-width:calc(100% - 32px)}
+/* Floating window layout */
+body.pip{padding:10px;min-height:100vh;display:flex}
+body.pip #floatCard{flex:1}
+body.pip .card{min-height:0}
+body.pip .face{padding:14px 16px}
+body.pip .wd{font-size:clamp(22px,9vw,34px)}
+@media (max-width:480px){.edit{grid-template-columns:1fr}.boxes .bx{flex-direction:column;align-items:center;gap:0;padding:5px 4px}.boxes .bx span{font-size:10.5px}}
+</style>
+
+</head>
+<body>
+<script>window.__SEED__={"version": "2026-10-19", "words": [{"nl": "cursus", "article": "de", "type": "zn", "en": "course, class", "plural": "cursussen", "forms": null, "prep": "een cursus volgen / geven", "example": "Ik volg een cursus Nederlands in het CVO.", "exampleEn": "I'm taking a Dutch course at the adult education centre.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733135, "ok": 0, "wrong": 0, "id": "v001"}, {"nl": "departement", "article": "het", "type": "zn", "en": "department", "plural": "departementen", "forms": null, "prep": "op het departement", "example": "Ze werkt op het departement Cardiovasculaire Wetenschappen.", "exampleEn": "She works at the Department of Cardiovascular Sciences.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733134, "ok": 0, "wrong": 0, "id": "v002"}, {"nl": "directeur / directrice", "article": "de", "type": "zn", "en": "principal, director (m / f)", "plural": "directeurs / directrices", "forms": null, "prep": "de directeur van een school", "example": "De directrice van de school opent het nieuwe schooljaar.", "exampleEn": "The (female) principal opens the new school year.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733133, "ok": 0, "wrong": 0, "id": "v003"}, {"nl": "examen", "article": "het", "type": "zn", "en": "exam", "plural": "examens", "forms": null, "prep": "een examen afleggen; slagen voor / zakken voor een examen", "example": "Morgen heb ik mijn mondeling examen Nederlands.", "exampleEn": "Tomorrow I have my oral Dutch exam.", "syn": "de proef", "ant": null, "box": 1, "due": 0, "added": 1792421733132, "ok": 0, "wrong": 0, "id": "v004"}, {"nl": "huiswerk", "article": "het", "type": "zn", "en": "homework", "plural": null, "forms": null, "prep": "huiswerk maken", "example": "Heb je je huiswerk al gemaakt?", "exampleEn": "Have you already done your homework?", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733131, "ok": 0, "wrong": 0, "id": "v005"}, {"nl": "klas", "article": "de", "type": "zn", "en": "class (group of pupils)", "plural": "klassen", "forms": null, "prep": "in de klas; in welke klas zit je?", "example": "Er zitten twintig cursisten in onze klas.", "exampleEn": "There are twenty students in our class.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733130, "ok": 0, "wrong": 0, "id": "v006"}, {"nl": "lokaal", "article": "het", "type": "zn", "en": "classroom", "plural": "lokalen", "forms": null, "prep": "in lokaal 3", "example": "De les gaat vandaag door in lokaal 01.12.", "exampleEn": "Today's lesson takes place in room 01.12.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733129, "ok": 0, "wrong": 0, "id": "v007"}, {"nl": "mondeling", "article": null, "type": "bn", "en": "oral", "plural": null, "forms": null, "prep": "een mondeling examen", "example": "Het mondelinge deel van het examen duurt een kwartier.", "exampleEn": "The oral part of the exam takes fifteen minutes.", "syn": null, "ant": "schriftelijk", "box": 1, "due": 0, "added": 1792421733128, "ok": 0, "wrong": 0, "id": "v008"}, {"nl": "niveau", "article": "het", "type": "zn", "en": "level", "plural": "niveaus", "forms": null, "prep": "op niveau B2", "example": "Mijn Nederlands is nu op niveau B1.", "exampleEn": "My Dutch is now at level B1.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733127, "ok": 0, "wrong": 0, "id": "v009"}, {"nl": "onthouden", "article": null, "type": "ww", "en": "to remember (keep in your memory)", "plural": null, "forms": "onthield – heeft onthouden", "prep": "iets onthouden", "example": "Ik kan zijn naam nooit onthouden.", "exampleEn": "I can never remember his name.", "syn": "memoriseren", "ant": "vergeten", "box": 1, "due": 0, "added": 1792421733126, "ok": 0, "wrong": 0, "id": "v010"}, {"nl": "opdracht", "article": "de", "type": "zn", "en": "assignment (with instructions)", "plural": "opdrachten", "forms": null, "prep": "een opdracht geven / uitvoeren", "example": "De docent gaf ons een opdracht voor volgende week.", "exampleEn": "The teacher gave us an assignment for next week.", "syn": "de taak", "ant": null, "box": 1, "due": 0, "added": 1792421733125, "ok": 0, "wrong": 0, "id": "v011"}, {"nl": "opgave", "article": "de", "type": "zn", "en": "task, assignment (emphasis on difficulty)", "plural": "opgaven / opgaves", "forms": null, "prep": "een zware opgave", "example": "Een doctoraat combineren met een gezin is een zware opgave.", "exampleEn": "Combining a PhD with a family is a tough task.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733124, "ok": 0, "wrong": 0, "id": "v012"}, {"nl": "praktijk", "article": "de", "type": "zn", "en": "practice, (practical) experience", "plural": "praktijken", "forms": null, "prep": "in de praktijk; theorie en praktijk", "example": "In theorie is het simpel, maar in de praktijk valt het tegen.", "exampleEn": "In theory it's simple, but in practice it's disappointing.", "syn": null, "ant": "de theorie", "box": 1, "due": 0, "added": 1792421733123, "ok": 0, "wrong": 0, "id": "v013"}, {"nl": "praktisch / handig", "article": null, "type": "bn", "en": "practical, handy", "plural": null, "forms": null, "prep": "het is handig om …", "example": "Het is handig om je aantekeningen meteen digitaal te bewaren.", "exampleEn": "It's handy to save your notes digitally straight away.", "syn": null, "ant": "theoretisch", "box": 1, "due": 0, "added": 1792421733122, "ok": 0, "wrong": 0, "id": "v014"}, {"nl": "schriftelijk", "article": null, "type": "bn", "en": "written", "plural": null, "forms": null, "prep": "een schriftelijk examen", "example": "Het schriftelijke examen is in januari.", "exampleEn": "The written exam is in January.", "syn": null, "ant": "mondeling", "box": 1, "due": 0, "added": 1792421733121, "ok": 0, "wrong": 0, "id": "v015"}, {"nl": "test", "article": "de", "type": "zn", "en": "test (scientific, medical, general)", "plural": "tests", "forms": null, "prep": "een test doen / afnemen", "example": "De dokter laat een bloedtest doen.", "exampleEn": "The doctor is having a blood test done.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733120, "ok": 0, "wrong": 0, "id": "v016"}, {"nl": "testen", "article": null, "type": "ww", "en": "to test", "plural": null, "forms": "testte – heeft getest", "prep": "iets testen op …", "example": "We testen de cellen op mycoplasma.", "exampleEn": "We test the cells for mycoplasma.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733119, "ok": 0, "wrong": 0, "id": "v017"}, {"nl": "theoretisch", "article": null, "type": "bn", "en": "theoretical", "plural": null, "forms": null, "prep": null, "example": "Het eerste jaar is vooral theoretisch.", "exampleEn": "The first year is mainly theoretical.", "syn": null, "ant": "praktisch", "box": 1, "due": 0, "added": 1792421733118, "ok": 0, "wrong": 0, "id": "v018"}, {"nl": "theorie", "article": "de", "type": "zn", "en": "theory", "plural": "theorieën", "forms": null, "prep": "in theorie", "example": "In theorie zou het experiment moeten werken.", "exampleEn": "In theory the experiment should work.", "syn": null, "ant": "de praktijk", "box": 1, "due": 0, "added": 1792421733117, "ok": 0, "wrong": 0, "id": "v019"}, {"nl": "toets", "article": "de", "type": "zn", "en": "test (school, academic)", "plural": "toetsen", "forms": null, "prep": "een toets maken; een toets afnemen", "example": "Vrijdag hebben we een toets over hoofdstuk 4.", "exampleEn": "On Friday we have a test on chapter 4.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733116, "ok": 0, "wrong": 0, "id": "v020"}, {"nl": "toetsen", "article": null, "type": "ww", "en": "to test (knowledge, at school)", "plural": null, "forms": "toetste – heeft getoetst", "prep": "kennis toetsen", "example": "De leerkracht toetst de woordenschat elke week.", "exampleEn": "The teacher tests the vocabulary every week.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733115, "ok": 0, "wrong": 0, "id": "v021"}, {"nl": "universitair", "article": null, "type": "bn", "en": "academic, university (adj.)", "plural": null, "forms": null, "prep": "een universitair diploma; het universitair ziekenhuis", "example": "Ze werkt in het Universitair Ziekenhuis Leuven.", "exampleEn": "She works at University Hospital Leuven.", "syn": "academisch", "ant": null, "box": 1, "due": 0, "added": 1792421733114, "ok": 0, "wrong": 0, "id": "v022"}, {"nl": "universiteit", "article": "de", "type": "zn", "en": "university", "plural": "universiteiten", "forms": null, "prep": "aan de universiteit studeren", "example": "Hij studeert geneeskunde aan de universiteit.", "exampleEn": "He studies medicine at university.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733113, "ok": 0, "wrong": 0, "id": "v023"}, {"nl": "vak", "article": "het", "type": "zn", "en": "subject (at school or university)", "plural": "vakken", "forms": null, "prep": "een vak volgen; welk vak geef je?", "example": "Statistiek is mijn moeilijkste vak.", "exampleEn": "Statistics is my hardest subject.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733112, "ok": 0, "wrong": 0, "id": "v024"}, {"nl": "aantekening", "article": "de", "type": "zn", "en": "note, annotation", "plural": "aantekeningen", "forms": null, "prep": "aantekeningen maken", "example": "Mag ik je aantekeningen van de les lenen?", "exampleEn": "May I borrow your notes from the lesson?", "syn": "de notitie", "ant": null, "box": 1, "due": 0, "added": 1792421733111, "ok": 0, "wrong": 0, "id": "v025"}, {"nl": "academisch", "article": null, "type": "bn", "en": "academic", "plural": null, "forms": null, "prep": "het academiejaar; academisch schrijven", "example": "Academisch Nederlands is een stuk formeler.", "exampleEn": "Academic Dutch is a lot more formal.", "syn": "universitair", "ant": null, "box": 1, "due": 0, "added": 1792421733110, "ok": 0, "wrong": 0, "id": "v026"}, {"nl": "afkijken", "article": null, "type": "ww", "en": "to copy, to cheat (by looking at someone else's work)", "plural": null, "forms": "keek af – heeft afgekeken (scheidbaar)", "prep": "afkijken bij iemand", "example": "Hij werd betrapt toen hij bij zijn buur afkeek.", "exampleEn": "He was caught copying from his neighbour.", "syn": "spieken", "ant": null, "box": 1, "due": 0, "added": 1792421733109, "ok": 0, "wrong": 0, "id": "v027"}, {"nl": "afleggen (een examen)", "article": null, "type": "ww", "en": "to take, sit (an exam)", "plural": null, "forms": "legde af – heeft afgelegd (scheidbaar)", "prep": "een examen afleggen", "example": "Alle studenten moeten het examen in juni afleggen.", "exampleEn": "All students have to take the exam in June.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733108, "ok": 0, "wrong": 0, "id": "v028"}, {"nl": "afnemen (een examen)", "article": null, "type": "ww", "en": "to give, administer (an exam)", "plural": null, "forms": "nam af – heeft afgenomen (scheidbaar)", "prep": "een examen / toets / test afnemen", "example": "De professor neemt de examens mondeling af.", "exampleEn": "The professor gives the exams orally.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733107, "ok": 0, "wrong": 0, "id": "v029"}, {"nl": "afstuderen", "article": null, "type": "ww", "en": "to graduate", "plural": null, "forms": "studeerde af – is afgestudeerd (scheidbaar)", "prep": "afstuderen in (een richting); afstuderen aan (een universiteit)", "example": "Ze is vorig jaar afgestudeerd in de biomedische wetenschappen.", "exampleEn": "She graduated in biomedical sciences last year.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733106, "ok": 0, "wrong": 0, "id": "v030"}, {"nl": "analyseren", "article": null, "type": "ww", "en": "to analyse", "plural": null, "forms": "analyseerde – heeft geanalyseerd", "prep": null, "example": "We analyseren de RNA-seq-data in R.", "exampleEn": "We analyse the RNA-seq data in R.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733105, "ok": 0, "wrong": 0, "id": "v031"}, {"nl": "analyse", "article": "de", "type": "zn", "en": "analysis", "plural": "analyses", "forms": null, "prep": "een analyse maken / uitvoeren", "example": "De analyse toont een duidelijk verschil tussen de groepen.", "exampleEn": "The analysis shows a clear difference between the groups.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733104, "ok": 0, "wrong": 0, "id": "v032"}, {"nl": "attest (doktersattest)", "article": "het", "type": "zn", "en": "certificate; doctor's note", "plural": "attesten", "forms": null, "prep": "een attest binnenbrengen", "example": "Wie ziek is tijdens een examen, moet een doktersattest binnenbrengen.", "exampleEn": "Anyone who is ill during an exam must hand in a doctor's note.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733103, "ok": 0, "wrong": 0, "id": "v033"}, {"nl": "beïnvloeden", "article": null, "type": "ww", "en": "to influence", "plural": null, "forms": "beïnvloedde – heeft beïnvloed", "prep": "iemand / iets beïnvloeden", "example": "Slaap beïnvloedt hoe goed je nieuwe woorden onthoudt.", "exampleEn": "Sleep influences how well you remember new words.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733102, "ok": 0, "wrong": 0, "id": "v034"}, {"nl": "invloed", "article": "de", "type": "zn", "en": "influence, effect", "plural": "invloeden", "forms": null, "prep": "invloed hebben op", "example": "Stress heeft een grote invloed op je geheugen.", "exampleEn": "Stress has a big effect on your memory.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733101, "ok": 0, "wrong": 0, "id": "v035"}, {"nl": "bekwaam", "article": null, "type": "bn", "en": "competent, capable", "plural": null, "forms": null, "prep": "bekwaam zijn in iets", "example": "Ze is een zeer bekwame onderzoeker.", "exampleEn": "She is a very capable researcher.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733100, "ok": 0, "wrong": 0, "id": "v036"}, {"nl": "bestaan uit", "article": null, "type": "ww", "en": "to consist of", "plural": null, "forms": "bestond – heeft bestaan", "prep": "bestaan uit", "example": "Het examen bestaat uit een schriftelijk en een mondeling deel.", "exampleEn": "The exam consists of a written and an oral part.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733099, "ok": 0, "wrong": 0, "id": "v037"}, {"nl": "bestuderen", "article": null, "type": "ww", "en": "to study (examine closely)", "plural": null, "forms": "bestudeerde – heeft bestudeerd", "prep": "iets bestuderen", "example": "We bestuderen hoe megakaryocyten rijpen.", "exampleEn": "We study how megakaryocytes mature.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733098, "ok": 0, "wrong": 0, "id": "v038"}, {"nl": "bewustzijn", "article": "het", "type": "zn", "en": "consciousness, awareness", "plural": null, "forms": null, "prep": "het bewustzijn verliezen; het bewustzijn van …", "example": "Na de val verloor hij even het bewustzijn.", "exampleEn": "After the fall he briefly lost consciousness.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733097, "ok": 0, "wrong": 0, "id": "v039"}, {"nl": "bewust", "article": null, "type": "bn", "en": "conscious, aware", "plural": null, "forms": null, "prep": "zich bewust zijn van", "example": "Ik ben me bewust van de risico's.", "exampleEn": "I'm aware of the risks.", "syn": null, "ant": "onbewust", "box": 1, "due": 0, "added": 1792421733096, "ok": 0, "wrong": 0, "id": "v040"}, {"nl": "bijscholen", "article": null, "type": "ww", "en": "to get further training (in your own field)", "plural": null, "forms": "schoolde bij – heeft bijgeschoold (scheidbaar)", "prep": "zich bijscholen in", "example": "Verpleegkundigen moeten zich regelmatig bijscholen.", "exampleEn": "Nurses have to get further training regularly.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733095, "ok": 0, "wrong": 0, "id": "v041"}, {"nl": "bijscholing", "article": "de", "type": "zn", "en": "further training", "plural": "bijscholingen", "forms": null, "prep": "een bijscholing volgen", "example": "Ik volg volgende maand een bijscholing over statistiek.", "exampleEn": "Next month I'm taking a training course on statistics.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733094, "ok": 0, "wrong": 0, "id": "v042"}, {"nl": "bijwonen", "article": null, "type": "ww", "en": "to attend", "plural": null, "forms": "woonde bij – heeft bijgewoond (scheidbaar)", "prep": "een les / vergadering / verdediging bijwonen", "example": "Ik woon morgen de doctoraatsverdediging van een collega bij.", "exampleEn": "Tomorrow I'm attending a colleague's PhD defence.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733093, "ok": 0, "wrong": 0, "id": "v043"}, {"nl": "certificaat", "article": "het", "type": "zn", "en": "certificate", "plural": "certificaten", "forms": null, "prep": "een certificaat behalen / krijgen", "example": "Na de cursus krijg je een certificaat.", "exampleEn": "After the course you get a certificate.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733092, "ok": 0, "wrong": 0, "id": "v044"}, {"nl": "collegerooster", "article": "het", "type": "zn", "en": "lecture schedule, timetable", "plural": "collegeroosters", "forms": null, "prep": "op het collegerooster", "example": "Het collegerooster staat op Toledo.", "exampleEn": "The lecture timetable is on Toledo.", "syn": "het lessenrooster", "ant": null, "box": 1, "due": 0, "added": 1792421733091, "ok": 0, "wrong": 0, "id": "v045"}, {"nl": "corrigeren / verbeteren", "article": null, "type": "ww", "en": "to correct (exams, mistakes)", "plural": null, "forms": "corrigeerde – heeft gecorrigeerd / verbeterde – heeft verbeterd", "prep": "examens corrigeren / verbeteren", "example": "De leerkracht verbetert de toetsen tijdens het weekend.", "exampleEn": "The teacher corrects the tests at the weekend.", "syn": "nakijken", "ant": null, "box": 1, "due": 0, "added": 1792421733090, "ok": 0, "wrong": 0, "id": "v046"}, {"nl": "cursist", "article": "de", "type": "zn", "en": "course participant", "plural": "cursisten", "forms": null, "prep": null, "example": "Alle cursisten krijgen een handboek.", "exampleEn": "All course participants get a textbook.", "syn": null, "ant": "de docent", "box": 1, "due": 0, "added": 1792421733089, "ok": 0, "wrong": 0, "id": "v047"}, {"nl": "diploma behalen", "article": null, "type": "uitdr", "en": "to get a diploma, degree", "plural": null, "forms": "behaalde – heeft behaald", "prep": "een diploma behalen", "example": "Ze heeft haar diploma met onderscheiding behaald.", "exampleEn": "She got her degree with distinction.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733088, "ok": 0, "wrong": 0, "id": "v048"}, {"nl": "doceren", "article": null, "type": "ww", "en": "to teach (at a university / college)", "plural": null, "forms": "doceerde – heeft gedoceerd", "prep": "doceren aan (een universiteit)", "example": "Ze doceert biochemie aan de KU Leuven.", "exampleEn": "She teaches biochemistry at KU Leuven.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733087, "ok": 0, "wrong": 0, "id": "v049"}, {"nl": "doctoreren", "article": null, "type": "ww", "en": "to do a PhD (Flanders)", "plural": null, "forms": "doctoreerde – heeft gedoctoreerd", "prep": "doctoreren in / aan / over", "example": "Ik doctoreer in de biomedische wetenschappen.", "exampleEn": "I'm doing a PhD in biomedical sciences.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733086, "ok": 0, "wrong": 0, "id": "v050"}, {"nl": "doctoraat", "article": "het", "type": "zn", "en": "doctorate, PhD", "plural": "doctoraten", "forms": null, "prep": "een doctoraat behalen / maken", "example": "Ze werkt aan een doctoraat over bloedplaatjes.", "exampleEn": "She's working on a PhD on platelets.", "syn": "het proefschrift", "ant": null, "box": 1, "due": 0, "added": 1792421733085, "ok": 0, "wrong": 0, "id": "v051"}, {"nl": "doctoraatsstudent", "article": "de", "type": "zn", "en": "PhD student", "plural": "doctoraatsstudenten", "forms": null, "prep": null, "example": "In ons labo werken vijf doctoraatsstudenten.", "exampleEn": "Five PhD students work in our lab.", "syn": "de doctorandus", "ant": null, "box": 1, "due": 0, "added": 1792421733084, "ok": 0, "wrong": 0, "id": "v052"}, {"nl": "doctorandus", "article": "de", "type": "zn", "en": "PhD candidate, almost done with a doctorate", "plural": "doctorandi", "forms": null, "prep": null, "example": "De doctorandus verdedigt haar proefschrift in mei.", "exampleEn": "The PhD candidate defends her thesis in May.", "syn": "de doctoraatsstudent", "ant": null, "box": 1, "due": 0, "added": 1792421733083, "ok": 0, "wrong": 0, "id": "v053"}, {"nl": "doctor", "article": "de", "type": "zn", "en": "doctor (PhD holder)", "plural": "doctors", "forms": null, "prep": "doctor in de wetenschappen", "example": "Na de verdediging mag je jezelf doctor noemen.", "exampleEn": "After the defence you may call yourself a doctor.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733082, "ok": 0, "wrong": 0, "id": "v054"}, {"nl": "doelstelling", "article": "de", "type": "zn", "en": "aim, objective", "plural": "doelstellingen", "forms": null, "prep": "een doelstelling bereiken / formuleren", "example": "De eerste doelstelling van het project is bereikt.", "exampleEn": "The first objective of the project has been reached.", "syn": "het doel", "ant": null, "box": 1, "due": 0, "added": 1792421733081, "ok": 0, "wrong": 0, "id": "v055"}, {"nl": "enthousiasme", "article": "het", "type": "zn", "en": "enthusiasm", "plural": null, "forms": null, "prep": "met veel enthousiasme", "example": "Ze vertelt met veel enthousiasme over haar onderzoek.", "exampleEn": "She talks about her research with great enthusiasm.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733080, "ok": 0, "wrong": 0, "id": "v056"}, {"nl": "enthousiast over", "article": null, "type": "bn", "en": "enthusiastic about", "plural": null, "forms": null, "prep": "enthousiast zijn over", "example": "Mijn promotor is erg enthousiast over de resultaten.", "exampleEn": "My supervisor is very enthusiastic about the results.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733079, "ok": 0, "wrong": 0, "id": "v057"}, {"nl": "examineren", "article": null, "type": "ww", "en": "to examine (test a candidate: pass or fail)", "plural": null, "forms": "examineerde – heeft geëxamineerd", "prep": "iemand examineren", "example": "De commissie examineert de kandidaten één voor één.", "exampleEn": "The committee examines the candidates one by one.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733078, "ok": 0, "wrong": 0, "id": "v058"}, {"nl": "experiment", "article": "het", "type": "zn", "en": "experiment", "plural": "experimenten", "forms": null, "prep": "een experiment uitvoeren / doen", "example": "Het experiment moet drie keer herhaald worden.", "exampleEn": "The experiment has to be repeated three times.", "syn": "de proef", "ant": null, "box": 1, "due": 0, "added": 1792421733077, "ok": 0, "wrong": 0, "id": "v059"}, {"nl": "faculteit", "article": "de", "type": "zn", "en": "faculty", "plural": "faculteiten", "forms": null, "prep": "aan de faculteit Geneeskunde", "example": "Hij werkt aan de faculteit Geneeskunde.", "exampleEn": "He works at the Faculty of Medicine.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733076, "ok": 0, "wrong": 0, "id": "v060"}, {"nl": "geheugen", "article": "het", "type": "zn", "en": "memory", "plural": "geheugens", "forms": null, "prep": "een goed / slecht geheugen hebben", "example": "Ik heb een slecht geheugen voor namen.", "exampleEn": "I have a bad memory for names.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733075, "ok": 0, "wrong": 0, "id": "v061"}, {"nl": "gemengd", "article": null, "type": "bn", "en": "mixed", "plural": null, "forms": null, "prep": "een gemengde klas / school", "example": "Het is een gemengde groep met cursisten uit tien landen.", "exampleEn": "It's a mixed group with students from ten countries.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733074, "ok": 0, "wrong": 0, "id": "v062"}, {"nl": "hogeschool", "article": "de", "type": "zn", "en": "college, university of applied sciences", "plural": "hogescholen", "forms": null, "prep": "aan de hogeschool studeren", "example": "Mijn zus studeert verpleegkunde aan de hogeschool.", "exampleEn": "My sister studies nursing at a university college.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733073, "ok": 0, "wrong": 0, "id": "v063"}, {"nl": "zich inschrijven voor", "article": null, "type": "ww", "en": "to register, enrol for", "plural": null, "forms": "schreef zich in – heeft zich ingeschreven (scheidbaar)", "prep": "zich inschrijven voor een cursus / examen", "example": "Je moet je vóór 15 oktober inschrijven voor het examen.", "exampleEn": "You have to register for the exam before 15 October.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733072, "ok": 0, "wrong": 0, "id": "v064"}, {"nl": "instructie", "article": "de", "type": "zn", "en": "instruction, direction", "plural": "instructies", "forms": null, "prep": "de instructies volgen", "example": "Lees eerst de instructies voor je begint.", "exampleEn": "Read the instructions first before you start.", "syn": "de aanwijzing, het voorschrift", "ant": null, "box": 1, "due": 0, "added": 1792421733071, "ok": 0, "wrong": 0, "id": "v065"}, {"nl": "kennis", "article": "de", "type": "zn", "en": "knowledge", "plural": null, "forms": null, "prep": "kennis hebben van; kennis opdoen", "example": "Hij heeft veel kennis van statistiek.", "exampleEn": "He has a lot of knowledge of statistics.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733070, "ok": 0, "wrong": 0, "id": "v066"}, {"nl": "klad", "article": "het", "type": "zn", "en": "(rough) draft", "plural": null, "forms": null, "prep": "in het klad schrijven", "example": "Schrijf je antwoord eerst in het klad.", "exampleEn": "Write your answer in rough first.", "syn": "de kladversie", "ant": "het net", "box": 1, "due": 0, "added": 1792421733069, "ok": 0, "wrong": 0, "id": "v067"}, {"nl": "lastig", "article": null, "type": "bn", "en": "tricky, difficult, tough", "plural": null, "forms": null, "prep": "het is lastig om te …", "example": "Het is lastig om de, het en een juist te gebruiken.", "exampleEn": "It's tricky to use de, het and een correctly.", "syn": "moeilijk", "ant": "makkelijk", "box": 1, "due": 0, "added": 1792421733068, "ok": 0, "wrong": 0, "id": "v068"}, {"nl": "lesgeven", "article": null, "type": "ww", "en": "to teach (primary / secondary school, a practical course)", "plural": null, "forms": "gaf les – heeft lesgegeven (scheidbaar)", "prep": "lesgeven aan (leerlingen)", "example": "Mijn moeder geeft les in een basisschool.", "exampleEn": "My mother teaches at a primary school.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733067, "ok": 0, "wrong": 0, "id": "v069"}, {"nl": "loopbaan", "article": "de", "type": "zn", "en": "career", "plural": "loopbanen", "forms": null, "prep": "een academische loopbaan", "example": "Ze wil een loopbaan in de industrie uitbouwen.", "exampleEn": "She wants to build a career in industry.", "syn": "de carrière", "ant": null, "box": 1, "due": 0, "added": 1792421733066, "ok": 0, "wrong": 0, "id": "v070"}, {"nl": "manier", "article": "de", "type": "zn", "en": "way, manner", "plural": "manieren", "forms": null, "prep": "op een andere manier; op die manier", "example": "Op die manier leer je de woorden sneller.", "exampleEn": "That way you learn the words faster.", "syn": "de wijze", "ant": null, "box": 1, "due": 0, "added": 1792421733065, "ok": 0, "wrong": 0, "id": "v071"}, {"nl": "medewerker / medewerkster", "article": "de", "type": "zn", "en": "employee, staff member, colleague", "plural": "medewerkers / medewerksters", "forms": null, "prep": "een wetenschappelijk medewerker", "example": "Alle medewerkers van het labo moeten de veiligheidsopleiding volgen.", "exampleEn": "All lab staff must take the safety training.", "syn": "de collega", "ant": null, "box": 1, "due": 0, "added": 1792421733064, "ok": 0, "wrong": 0, "id": "v072"}, {"nl": "memoriseren", "article": null, "type": "ww", "en": "to memorise", "plural": null, "forms": "memoriseerde – heeft gememoriseerd", "prep": null, "example": "Ik probeer elke dag tien nieuwe woorden te memoriseren.", "exampleEn": "I try to memorise ten new words every day.", "syn": "vanbuiten leren", "ant": null, "box": 1, "due": 0, "added": 1792421733063, "ok": 0, "wrong": 0, "id": "v073"}, {"nl": "methode", "article": "de", "type": "zn", "en": "method", "plural": "methoden / methodes", "forms": null, "prep": "een methode gebruiken / toepassen", "example": "Deze methode is sneller en goedkoper.", "exampleEn": "This method is faster and cheaper.", "syn": "de werkwijze", "ant": null, "box": 1, "due": 0, "added": 1792421733062, "ok": 0, "wrong": 0, "id": "v074"}, {"nl": "nakijken / controleren", "article": null, "type": "ww", "en": "to check (an exam, work)", "plural": null, "forms": "keek na – heeft nagekeken (scheidbaar) / controleerde – heeft gecontroleerd", "prep": "een examen nakijken", "example": "Kun jij mijn tekst even nakijken op fouten?", "exampleEn": "Could you check my text for mistakes?", "syn": "verbeteren", "ant": null, "box": 1, "due": 0, "added": 1792421733061, "ok": 0, "wrong": 0, "id": "v075"}, {"nl": "nauwkeurig", "article": null, "type": "bn", "en": "accurate, precise", "plural": null, "forms": null, "prep": "nauwkeurig werken / meten", "example": "Pipetteer zo nauwkeurig mogelijk.", "exampleEn": "Pipette as accurately as possible.", "syn": "precies", "ant": "slordig", "box": 1, "due": 0, "added": 1792421733060, "ok": 0, "wrong": 0, "id": "v076"}, {"nl": "zich omscholen", "article": null, "type": "ww", "en": "to retrain (for a new profession)", "plural": null, "forms": "schoolde zich om – heeft zich omgeschoold (scheidbaar)", "prep": "zich omscholen tot (leerkracht)", "example": "Na tien jaar in de bank schoolde hij zich om tot leerkracht.", "exampleEn": "After ten years at the bank he retrained as a teacher.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733059, "ok": 0, "wrong": 0, "id": "v077"}, {"nl": "(grote) onderscheiding", "article": "de", "type": "zn", "en": "distinction (mark)", "plural": "onderscheidingen", "forms": null, "prep": "met (grote) onderscheiding slagen", "example": "Hij is met grote onderscheiding geslaagd.", "exampleEn": "He passed with great distinction.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733058, "ok": 0, "wrong": 0, "id": "v078"}, {"nl": "onderwijzen", "article": null, "type": "ww", "en": "to teach (formal)", "plural": null, "forms": "onderwees – heeft onderwezen", "prep": null, "example": "Hij onderwijst al dertig jaar wiskunde.", "exampleEn": "He has been teaching mathematics for thirty years.", "syn": "lesgeven", "ant": null, "box": 1, "due": 0, "added": 1792421733057, "ok": 0, "wrong": 0, "id": "v079"}, {"nl": "onderwijs", "article": "het", "type": "zn", "en": "education", "plural": null, "forms": null, "prep": "in het onderwijs werken; hoger onderwijs", "example": "Ze werkt al jaren in het onderwijs.", "exampleEn": "She has worked in education for years.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733056, "ok": 0, "wrong": 0, "id": "v080"}, {"nl": "onderzoeken", "article": null, "type": "ww", "en": "to investigate, to research", "plural": null, "forms": "onderzocht – heeft onderzocht", "prep": null, "example": "De politie onderzoekt de oorzaak van het ongeval.", "exampleEn": "The police are investigating the cause of the accident.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733055, "ok": 0, "wrong": 0, "id": "v081"}, {"nl": "onderzoek", "article": "het", "type": "zn", "en": "research; examination", "plural": "onderzoeken", "forms": null, "prep": "onderzoek doen naar", "example": "We doen onderzoek naar erfelijke bloedplaatjesziekten.", "exampleEn": "We do research into inherited platelet disorders.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733054, "ok": 0, "wrong": 0, "id": "v082"}, {"nl": "onderzoeker", "article": "de", "type": "zn", "en": "researcher", "plural": "onderzoekers", "forms": null, "prep": null, "example": "Twee onderzoekers presenteren hun resultaten op het congres.", "exampleEn": "Two researchers present their results at the conference.", "syn": "de wetenschapper", "ant": null, "box": 1, "due": 0, "added": 1792421733053, "ok": 0, "wrong": 0, "id": "v083"}, {"nl": "onvoldoende", "article": "de", "type": "zn", "en": "fail mark, unsatisfactory grade", "plural": "onvoldoendes", "forms": null, "prep": "een onvoldoende halen / krijgen", "example": "Ik had een onvoldoende voor fysica.", "exampleEn": "I got a fail mark for physics.", "syn": null, "ant": "de voldoende", "box": 1, "due": 0, "added": 1792421733052, "ok": 0, "wrong": 0, "id": "v084"}, {"nl": "onvoldoende (bn)", "article": null, "type": "bn", "en": "insufficient", "plural": null, "forms": null, "prep": "onvoldoende zijn", "example": "Er is onvoldoende tijd om alles te herhalen.", "exampleEn": "There is insufficient time to repeat everything.", "syn": null, "ant": "voldoende", "box": 1, "due": 0, "added": 1792421733051, "ok": 0, "wrong": 0, "id": "v085"}, {"nl": "opleiden", "article": null, "type": "ww", "en": "to train, educate (for a profession, over a long time)", "plural": null, "forms": "leidde op – heeft opgeleid (scheidbaar)", "prep": "iemand opleiden tot (arts)", "example": "Deze hogeschool leidt verpleegkundigen op.", "exampleEn": "This college trains nurses.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733050, "ok": 0, "wrong": 0, "id": "v086"}, {"nl": "opleiding", "article": "de", "type": "zn", "en": "training, education (programme)", "plural": "opleidingen", "forms": null, "prep": "een opleiding volgen", "example": "Welke opleiding heb je gevolgd?", "exampleEn": "Which programme did you study?", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733049, "ok": 0, "wrong": 0, "id": "v087"}, {"nl": "opmerking", "article": "de", "type": "zn", "en": "comment, remark", "plural": "opmerkingen", "forms": null, "prep": "een opmerking maken over", "example": "De reviewer had enkele opmerkingen over de methode.", "exampleEn": "The reviewer had a few comments on the method.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733048, "ok": 0, "wrong": 0, "id": "v088"}, {"nl": "opschrijven", "article": null, "type": "ww", "en": "to write down, to note", "plural": null, "forms": "schreef op – heeft opgeschreven (scheidbaar)", "prep": null, "example": "Schrijf nieuwe woorden meteen op.", "exampleEn": "Write new words down straight away.", "syn": "noteren", "ant": null, "box": 1, "due": 0, "added": 1792421733047, "ok": 0, "wrong": 0, "id": "v089"}, {"nl": "opzoeken", "article": null, "type": "ww", "en": "to look up, to search", "plural": null, "forms": "zocht op – heeft opgezocht (scheidbaar)", "prep": "iets opzoeken in het woordenboek", "example": "Ik zoek elk onbekend woord op in het woordenboek.", "exampleEn": "I look up every unknown word in the dictionary.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733046, "ok": 0, "wrong": 0, "id": "v090"}, {"nl": "overschrijven", "article": null, "type": "ww", "en": "to copy, write out again", "plural": null, "forms": "schreef over – heeft overgeschreven (scheidbaar)", "prep": "overschrijven van iemand", "example": "Hij heeft zijn huiswerk van een vriend overgeschreven.", "exampleEn": "He copied his homework from a friend.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733045, "ok": 0, "wrong": 0, "id": "v091"}, {"nl": "overslaan", "article": null, "type": "ww", "en": "to skip", "plural": null, "forms": "sloeg over – heeft overgeslagen (scheidbaar)", "prep": "een vraag / les overslaan", "example": "Als je een vraag niet weet, sla je ze best over.", "exampleEn": "If you don't know a question, it's best to skip it.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733044, "ok": 0, "wrong": 0, "id": "v092"}, {"nl": "practicum", "article": "het", "type": "zn", "en": "lab session, hands-on session", "plural": "practica", "forms": null, "prep": "tijdens het practicum", "example": "Tijdens het practicum leren de studenten pipetteren.", "exampleEn": "During the lab session the students learn to pipette.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733043, "ok": 0, "wrong": 0, "id": "v093"}, {"nl": "presenteren", "article": null, "type": "ww", "en": "to present, introduce", "plural": null, "forms": "presenteerde – heeft gepresenteerd", "prep": "iets presenteren aan iemand", "example": "Ik presenteer mijn resultaten op de labmeeting.", "exampleEn": "I'm presenting my results at the lab meeting.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733042, "ok": 0, "wrong": 0, "id": "v094"}, {"nl": "presentatie", "article": "de", "type": "zn", "en": "presentation", "plural": "presentaties", "forms": null, "prep": "een presentatie geven over", "example": "Ze gaf een heldere presentatie over haar project.", "exampleEn": "She gave a clear presentation about her project.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733041, "ok": 0, "wrong": 0, "id": "v095"}, {"nl": "promoveren", "article": null, "type": "ww", "en": "to obtain a PhD", "plural": null, "forms": "promoveerde – is gepromoveerd", "prep": "promoveren op (een proefschrift); promoveren tot doctor", "example": "Hij is gepromoveerd op een proefschrift over trombocytopenie.", "exampleEn": "He obtained his PhD with a thesis on thrombocytopenia.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733040, "ok": 0, "wrong": 0, "id": "v096"}, {"nl": "rector", "article": "de", "type": "zn", "en": "rector, head of a university", "plural": "rectoren / rectors", "forms": null, "prep": "de rector van de universiteit", "example": "De rector opent het academiejaar.", "exampleEn": "The rector opens the academic year.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733039, "ok": 0, "wrong": 0, "id": "v097"}, {"nl": "scriptie", "article": "de", "type": "zn", "en": "thesis (bachelor / master)", "plural": "scripties", "forms": null, "prep": "een scriptie schrijven over", "example": "Ze schrijft haar masterscriptie over SLFN14.", "exampleEn": "She is writing her master's thesis on SLFN14.", "syn": "de masterproef", "ant": null, "box": 1, "due": 0, "added": 1792421733038, "ok": 0, "wrong": 0, "id": "v098"}, {"nl": "slagen voor", "article": null, "type": "ww", "en": "to pass (an exam)", "plural": null, "forms": "slaagde – is geslaagd", "prep": "slagen voor een examen", "example": "Proficiat! Je bent geslaagd voor je rijexamen.", "exampleEn": "Congratulations! You passed your driving test.", "syn": null, "ant": "zakken voor", "box": 1, "due": 0, "added": 1792421733037, "ok": 0, "wrong": 0, "id": "v099"}, {"nl": "zich specialiseren in", "article": null, "type": "ww", "en": "to specialise in", "plural": null, "forms": "specialiseerde zich – heeft zich gespecialiseerd", "prep": "zich specialiseren in", "example": "Ze heeft zich gespecialiseerd in hematologie.", "exampleEn": "She specialised in haematology.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733036, "ok": 0, "wrong": 0, "id": "v100"}, {"nl": "specialisatie", "article": "de", "type": "zn", "en": "specialisation", "plural": "specialisaties", "forms": null, "prep": "een specialisatie in", "example": "Na de master volgt hij een specialisatie in de cardiologie.", "exampleEn": "After the master's he is doing a specialisation in cardiology.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733035, "ok": 0, "wrong": 0, "id": "v101"}, {"nl": "specialist", "article": "de", "type": "zn", "en": "specialist", "plural": "specialisten", "forms": null, "prep": "een specialist in", "example": "Voor die klacht moet je naar een specialist.", "exampleEn": "For that complaint you need to see a specialist.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733034, "ok": 0, "wrong": 0, "id": "v102"}, {"nl": "spelfout", "article": "de", "type": "zn", "en": "spelling mistake", "plural": "spelfouten", "forms": null, "prep": "een spelfout maken", "example": "Er staan nog twee spelfouten in je tekst.", "exampleEn": "There are still two spelling mistakes in your text.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733033, "ok": 0, "wrong": 0, "id": "v103"}, {"nl": "spieken", "article": null, "type": "ww", "en": "to cheat (in an exam)", "plural": null, "forms": "spiekte – heeft gespiekt", "prep": "spieken bij iemand", "example": "Wie spiekt, krijgt een nul.", "exampleEn": "Anyone who cheats gets a zero.", "syn": "afkijken", "ant": null, "box": 1, "due": 0, "added": 1792421733032, "ok": 0, "wrong": 0, "id": "v104"}, {"nl": "spijbelen", "article": null, "type": "ww", "en": "to skip school, play truant", "plural": null, "forms": "spijbelde – heeft gespijbeld", "prep": null, "example": "Hij spijbelde vaak op vrijdagnamiddag.", "exampleEn": "He often skipped school on Friday afternoons.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733031, "ok": 0, "wrong": 0, "id": "v105"}, {"nl": "spijbelaar", "article": "de", "type": "zn", "en": "truant (someone who skips school)", "plural": "spijbelaars", "forms": null, "prep": null, "example": "De school stuurt een brief naar de ouders van spijbelaars.", "exampleEn": "The school sends a letter to the parents of truants.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733030, "ok": 0, "wrong": 0, "id": "v106"}, {"nl": "studie", "article": "de", "type": "zn", "en": "study; (course of) studies", "plural": "studies", "forms": null, "prep": "een studie doen naar; hogere studies", "example": "Na haar studies verhuisde ze naar Leuven.", "exampleEn": "After her studies she moved to Leuven.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733029, "ok": 0, "wrong": 0, "id": "v107"}, {"nl": "studierichting", "article": "de", "type": "zn", "en": "field of study", "plural": "studierichtingen", "forms": null, "prep": "een studierichting kiezen", "example": "Het is niet makkelijk om een studierichting te kiezen.", "exampleEn": "It's not easy to choose a field of study.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733028, "ok": 0, "wrong": 0, "id": "v108"}, {"nl": "studiebeurs", "article": "de", "type": "zn", "en": "scholarship, grant", "plural": "studiebeurzen", "forms": null, "prep": "een studiebeurs aanvragen / krijgen", "example": "Ze kreeg een studiebeurs om in het buitenland te studeren.", "exampleEn": "She got a scholarship to study abroad.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733027, "ok": 0, "wrong": 0, "id": "v109"}, {"nl": "taak", "article": "de", "type": "zn", "en": "task, responsibility", "plural": "taken", "forms": null, "prep": "een taak uitvoeren; tot je taken behoren", "example": "Bestellingen plaatsen hoort ook bij mijn taken.", "exampleEn": "Placing orders is also one of my tasks.", "syn": "de opdracht", "ant": null, "box": 1, "due": 0, "added": 1792421733026, "ok": 0, "wrong": 0, "id": "v110"}, {"nl": "technisch", "article": null, "type": "bn", "en": "technical", "plural": null, "forms": null, "prep": "technische problemen", "example": "We hadden technische problemen met de sequencer.", "exampleEn": "We had technical problems with the sequencer.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733025, "ok": 0, "wrong": 0, "id": "v111"}, {"nl": "toelatingsexamen", "article": "het", "type": "zn", "en": "entrance exam", "plural": "toelatingsexamens", "forms": null, "prep": "slagen voor het toelatingsexamen", "example": "Voor geneeskunde moet je een toelatingsexamen afleggen.", "exampleEn": "For medicine you have to sit an entrance exam.", "syn": "de toelatingsproef", "ant": null, "box": 1, "due": 0, "added": 1792421733024, "ok": 0, "wrong": 0, "id": "v112"}, {"nl": "toelatingsproef", "article": "de", "type": "zn", "en": "admission test", "plural": "toelatingsproeven", "forms": null, "prep": "een toelatingsproef afleggen", "example": "De kunstschool organiseert een toelatingsproef in juli.", "exampleEn": "The art school holds an admission test in July.", "syn": "het toelatingsexamen", "ant": null, "box": 1, "due": 0, "added": 1792421733023, "ok": 0, "wrong": 0, "id": "v113"}, {"nl": "uitleggen", "article": null, "type": "ww", "en": "to explain (how something works)", "plural": null, "forms": "legde uit – heeft uitgelegd (scheidbaar)", "prep": "iets uitleggen aan iemand", "example": "Kun je me uitleggen hoe die machine werkt?", "exampleEn": "Can you explain to me how that machine works?", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733022, "ok": 0, "wrong": 0, "id": "v114"}, {"nl": "uitleg", "article": "de", "type": "zn", "en": "explanation", "plural": null, "forms": null, "prep": "uitleg geven over", "example": "Bedankt voor de duidelijke uitleg!", "exampleEn": "Thanks for the clear explanation!", "syn": "de verklaring", "ant": null, "box": 1, "due": 0, "added": 1792421733021, "ok": 0, "wrong": 0, "id": "v115"}, {"nl": "uitslag", "article": "de", "type": "zn", "en": "result (of an exam, test, election)", "plural": "uitslagen", "forms": null, "prep": "de uitslag van", "example": "De uitslag van de bloedtest komt morgen.", "exampleEn": "The result of the blood test comes tomorrow.", "syn": "het resultaat", "ant": null, "box": 1, "due": 0, "added": 1792421733020, "ok": 0, "wrong": 0, "id": "v116"}, {"nl": "uitsluiten", "article": null, "type": "ww", "en": "to exclude, rule out", "plural": null, "forms": "sloot uit – heeft uitgesloten (scheidbaar)", "prep": "iets niet kunnen uitsluiten", "example": "We kunnen een fout in de analyse niet uitsluiten.", "exampleEn": "We can't rule out a mistake in the analysis.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733019, "ok": 0, "wrong": 0, "id": "v117"}, {"nl": "verbeteren", "article": null, "type": "ww", "en": "to improve", "plural": null, "forms": "verbeterde – heeft verbeterd", "prep": "zijn Nederlands verbeteren", "example": "Door elke dag te oefenen, verbeter je je uitspraak.", "exampleEn": "By practising every day you improve your pronunciation.", "syn": null, "ant": "verslechteren", "box": 1, "due": 0, "added": 1792421733018, "ok": 0, "wrong": 0, "id": "v118"}, {"nl": "verbetering", "article": "de", "type": "zn", "en": "improvement; correction", "plural": "verbeteringen", "forms": null, "prep": "een verbetering ten opzichte van", "example": "Dit is een grote verbetering ten opzichte van vorig jaar.", "exampleEn": "This is a big improvement compared with last year.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733017, "ok": 0, "wrong": 0, "id": "v119"}, {"nl": "vergeetachtig", "article": null, "type": "bn", "en": "forgetful", "plural": null, "forms": null, "prep": null, "example": "Sinds ik zo weinig slaap, ben ik erg vergeetachtig.", "exampleEn": "Since I sleep so little, I've been very forgetful.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733016, "ok": 0, "wrong": 0, "id": "v120"}, {"nl": "verklaren", "article": null, "type": "ww", "en": "to explain (why), to declare, clarify", "plural": null, "forms": "verklaarde – heeft verklaard", "prep": "iets verklaren; verklaren dat …", "example": "Hoe verklaar je dat de resultaten zo verschillen?", "exampleEn": "How do you explain why the results differ so much?", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733015, "ok": 0, "wrong": 0, "id": "v121"}, {"nl": "verleren", "article": null, "type": "ww", "en": "to forget (a skill), unlearn", "plural": null, "forms": "verleerde – is / heeft verleerd", "prep": "iets verleren", "example": "Fietsen verleer je nooit.", "exampleEn": "You never forget how to ride a bike.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733014, "ok": 0, "wrong": 0, "id": "v122"}, {"nl": "verslag", "article": "het", "type": "zn", "en": "report", "plural": "verslagen", "forms": null, "prep": "een verslag schrijven over; verslag uitbrengen", "example": "Na elk practicum schrijf je een verslag.", "exampleEn": "After every lab session you write a report.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733013, "ok": 0, "wrong": 0, "id": "v123"}, {"nl": "zich voorbereiden op", "article": null, "type": "ww", "en": "to prepare (yourself) for", "plural": null, "forms": "bereidde zich voor – heeft zich voorbereid (scheidbaar)", "prep": "zich voorbereiden op een examen", "example": "Ik bereid me voor op het examen van volgende week.", "exampleEn": "I'm preparing for next week's exam.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733012, "ok": 0, "wrong": 0, "id": "v124"}, {"nl": "weigeren", "article": null, "type": "ww", "en": "to refuse", "plural": null, "forms": "weigerde – heeft geweigerd", "prep": "weigeren om te + inf.", "example": "Het tijdschrift weigerde ons artikel te publiceren.", "exampleEn": "The journal refused to publish our article.", "syn": null, "ant": "aanvaarden", "box": 1, "due": 0, "added": 1792421733011, "ok": 0, "wrong": 0, "id": "v125"}, {"nl": "wetenschap", "article": "de", "type": "zn", "en": "science", "plural": "wetenschappen", "forms": null, "prep": "in de wetenschap", "example": "Ze werkt al tien jaar in de wetenschap.", "exampleEn": "She has worked in science for ten years.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733010, "ok": 0, "wrong": 0, "id": "v126"}, {"nl": "wetenschappelijk", "article": null, "type": "bn", "en": "scientific", "plural": null, "forms": null, "prep": "een wetenschappelijk artikel", "example": "Het artikel verschijnt in een wetenschappelijk tijdschrift.", "exampleEn": "The article appears in a scientific journal.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733009, "ok": 0, "wrong": 0, "id": "v127"}, {"nl": "wetenschapper", "article": "de", "type": "zn", "en": "scientist", "plural": "wetenschappers", "forms": null, "prep": null, "example": "Wetenschappers waarschuwen voor de gevolgen.", "exampleEn": "Scientists warn about the consequences.", "syn": "de onderzoeker", "ant": null, "box": 1, "due": 0, "added": 1792421733008, "ok": 0, "wrong": 0, "id": "v128"}, {"nl": "zittijd", "article": "de", "type": "zn", "en": "exam period (Flanders)", "plural": "zittijden", "forms": null, "prep": "in de zittijd; de tweede zittijd", "example": "Tijdens de zittijd zit de bibliotheek altijd vol.", "exampleEn": "During the exam period the library is always full.", "syn": "de examenperiode", "ant": null, "box": 1, "due": 0, "added": 1792421733007, "ok": 0, "wrong": 0, "id": "v129"}, {"nl": "zakken voor", "article": null, "type": "ww", "en": "to fail (an exam)", "plural": null, "forms": "zakte – is gezakt", "prep": "zakken voor een examen", "example": "Hij is gezakt voor zijn rijexamen.", "exampleEn": "He failed his driving test.", "syn": null, "ant": "slagen voor", "box": 1, "due": 0, "added": 1792421733006, "ok": 0, "wrong": 0, "id": "v130"}, {"nl": "aan bod komen", "article": null, "type": "uitdr", "en": "to be discussed, to come up", "plural": null, "forms": "kwam aan bod – is aan bod gekomen", "prep": null, "example": "In de les kwamen de scheidbare werkwoorden aan bod.", "exampleEn": "Separable verbs were covered in the lesson.", "syn": "besproken worden", "ant": null, "box": 1, "due": 0, "added": 1792421733005, "ok": 0, "wrong": 0, "id": "v131"}, {"nl": "het niet zien zitten", "article": null, "type": "uitdr", "en": "to not want to, not like the idea of, not feel up to", "plural": null, "forms": "zag het niet zitten – heeft het niet zien zitten", "prep": "het niet zien zitten om te + inf.", "example": "Ik zie het niet zitten om in het weekend te werken.", "exampleEn": "I don't feel like working at the weekend.", "syn": null, "ant": "het zien zitten", "box": 1, "due": 0, "added": 1792421733004, "ok": 0, "wrong": 0, "id": "v132"}, {"nl": "in de hand hebben", "article": null, "type": "uitdr", "en": "to have under control", "plural": null, "forms": "had in de hand – heeft in de hand gehad", "prep": "de situatie in de hand hebben", "example": "De dokters hebben de infectie nu in de hand.", "exampleEn": "The doctors now have the infection under control.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733003, "ok": 0, "wrong": 0, "id": "v133"}, {"nl": "maatregelen nemen tegen", "article": null, "type": "uitdr", "en": "to take measures against", "plural": null, "forms": "nam – heeft genomen", "prep": "maatregelen nemen tegen", "example": "De school neemt maatregelen tegen spijbelen.", "exampleEn": "The school is taking measures against truancy.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733002, "ok": 0, "wrong": 0, "id": "v134"}, {"nl": "te danken hebben aan", "article": null, "type": "uitdr", "en": "to owe to (positive)", "plural": null, "forms": "had te danken – heeft te danken gehad", "prep": "iets te danken hebben aan iemand", "example": "Ik heb mijn baan te danken aan mijn promotor.", "exampleEn": "I owe my job to my supervisor.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733001, "ok": 0, "wrong": 0, "id": "v135"}, {"nl": "te wijten zijn aan", "article": null, "type": "uitdr", "en": "to be due to (negative)", "plural": null, "forms": "was te wijten – is te wijten geweest", "prep": "te wijten zijn aan", "example": "De vertraging is te wijten aan een technisch probleem.", "exampleEn": "The delay is due to a technical problem.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421733000, "ok": 0, "wrong": 0, "id": "v136"}, {"nl": "vanbuiten leren", "article": null, "type": "uitdr", "en": "to learn by heart", "plural": null, "forms": "leerde vanbuiten – heeft vanbuiten geleerd", "prep": "iets vanbuiten leren", "example": "Je hoeft de definities niet vanbuiten te leren.", "exampleEn": "You don't have to learn the definitions by heart.", "syn": "uit het hoofd leren", "ant": null, "box": 1, "due": 0, "added": 1792421732999, "ok": 0, "wrong": 0, "id": "v137"}, {"nl": "van gedachten wisselen over", "article": null, "type": "uitdr", "en": "to exchange ideas on, discuss", "plural": null, "forms": "wisselde van gedachten – heeft van gedachten gewisseld", "prep": "van gedachten wisselen over iets", "example": "We wisselden van gedachten over de volgende experimenten.", "exampleEn": "We exchanged ideas about the next experiments.", "syn": "overleggen", "ant": null, "box": 1, "due": 0, "added": 1792421732998, "ok": 0, "wrong": 0, "id": "v138"}, {"nl": "je (uiterste) best doen", "article": null, "type": "uitdr", "en": "to do your best, your utmost", "plural": null, "forms": "deed zijn best – heeft zijn best gedaan", "prep": "je best doen om te + inf.", "example": "Ik doe mijn uiterste best om op tijd klaar te zijn.", "exampleEn": "I'm doing my utmost to be finished on time.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421732997, "ok": 0, "wrong": 0, "id": "v139"}, {"nl": "uit het hoofd leren", "article": null, "type": "uitdr", "en": "to learn by heart", "plural": null, "forms": "leerde uit het hoofd – heeft uit het hoofd geleerd", "prep": "iets uit het hoofd leren", "example": "Voor de presentatie leer ik mijn eerste zin uit het hoofd.", "exampleEn": "For the presentation I'm learning my first sentence by heart.", "syn": "vanbuiten leren", "ant": null, "box": 1, "due": 0, "added": 1792421732996, "ok": 0, "wrong": 0, "id": "v140"}, {"nl": "de kern van de zaak", "article": null, "type": "uitdr", "en": "the heart of the matter", "plural": null, "forms": null, "prep": "tot de kern van de zaak komen", "example": "Laten we meteen tot de kern van de zaak komen.", "exampleEn": "Let's get straight to the heart of the matter.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421732995, "ok": 0, "wrong": 0, "id": "v141"}, {"nl": "iemand van gezicht kennen", "article": null, "type": "uitdr", "en": "to only know someone by sight", "plural": null, "forms": "kende – heeft gekend", "prep": null, "example": "Ik ken haar alleen van gezicht, we hebben nog nooit gepraat.", "exampleEn": "I only know her by sight, we've never talked.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421732994, "ok": 0, "wrong": 0, "id": "v142"}, {"nl": "iemand persoonlijk kennen", "article": null, "type": "uitdr", "en": "to know someone personally", "plural": null, "forms": "kende – heeft gekend", "prep": null, "example": "Ken je de professor persoonlijk?", "exampleEn": "Do you know the professor personally?", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421732993, "ok": 0, "wrong": 0, "id": "v143"}, {"nl": "iemand door en door kennen", "article": null, "type": "uitdr", "en": "to know someone (or something) inside out", "plural": null, "forms": "kende – heeft gekend", "prep": null, "example": "Na twintig jaar ken ik hem door en door.", "exampleEn": "After twenty years I know him inside out.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421732992, "ok": 0, "wrong": 0, "id": "v144"}, {"nl": "iets uit het hoofd / vanbuiten kennen", "article": null, "type": "uitdr", "en": "to know something by heart", "plural": null, "forms": "kende – heeft gekend", "prep": null, "example": "Ik ken het gedicht nog altijd vanbuiten.", "exampleEn": "I still know the poem by heart.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421732991, "ok": 0, "wrong": 0, "id": "v145"}, {"nl": "ergens in thuis zijn", "article": null, "type": "uitdr", "en": "to know a lot about something, be at home in", "plural": null, "forms": "was – is geweest", "prep": "in iets thuis zijn", "example": "Vraag het aan Lies, zij is erg thuis in statistiek.", "exampleEn": "Ask Lies, she knows a lot about statistics.", "syn": "er veel van weten", "ant": null, "box": 1, "due": 0, "added": 1792421732990, "ok": 0, "wrong": 0, "id": "v146"}, {"nl": "Wie weet (het)!", "article": null, "type": "uitdr", "en": "Who knows!", "plural": null, "forms": null, "prep": null, "example": "Misschien win je de prijs, wie weet!", "exampleEn": "Maybe you'll win the prize, who knows!", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421732989, "ok": 0, "wrong": 0, "id": "v147"}, {"nl": "weet ik veel", "article": null, "type": "uitdr", "en": "how should I know, I have no idea (informal)", "plural": null, "forms": null, "prep": null, "example": "Waar hij nu woont? Weet ik veel!", "exampleEn": "Where he lives now? I have no idea!", "syn": "dat weet ik niet", "ant": null, "box": 1, "due": 0, "added": 1792421732988, "ok": 0, "wrong": 0, "id": "v148"}, {"nl": "weten van wanten", "article": null, "type": "uitdr", "en": "to be very capable and experienced", "plural": null, "forms": "wist – heeft geweten", "prep": null, "example": "Die nieuwe technicus weet echt van wanten.", "exampleEn": "That new technician really knows his stuff.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421732987, "ok": 0, "wrong": 0, "id": "v149"}, {"nl": "onder de knie hebben", "article": null, "type": "uitdr", "en": "to have mastered", "plural": null, "forms": "had – heeft gehad; (krijgen: kreeg – heeft gekregen)", "prep": "iets onder de knie hebben / krijgen", "example": "Na drie maanden heb ik de techniek onder de knie.", "exampleEn": "After three months I've mastered the technique.", "syn": "beheersen", "ant": null, "box": 1, "due": 0, "added": 1792421732986, "ok": 0, "wrong": 0, "id": "v150"}, {"nl": "te weten komen", "article": null, "type": "uitdr", "en": "to find out, come to know", "plural": null, "forms": "kwam te weten – is te weten gekomen", "prep": null, "example": "Hoe ben je dat te weten gekomen?", "exampleEn": "How did you find that out?", "syn": "ontdekken", "ant": null, "box": 1, "due": 0, "added": 1792421732985, "ok": 0, "wrong": 0, "id": "v151"}, {"nl": "vaardigheid", "article": "de", "type": "zn", "en": "skill, ability", "plural": "vaardigheden", "forms": null, "prep": "vaardigheden ontwikkelen", "example": "Een doctoraat leert je ook veel praktische vaardigheden.", "exampleEn": "A PhD also teaches you a lot of practical skills.", "syn": null, "ant": null, "box": 1, "due": 0, "added": 1792421732984, "ok": 0, "wrong": 0, "id": "v152"}], "groups": [{"kind": "group", "type": "verwar", "words": ["opdracht", "opgave", "taak"], "note": "Opdracht = an assignment someone gives you, with instructions. Opgave = a task seen from how hard it is (een zware opgave), or an exercise in a book. Taak = a task or duty that is part of your job or role.", "examples": [{"word": "opdracht", "nl": "De docent geeft ons een opdracht voor vrijdag.", "en": "The teacher gives us an assignment for Friday."}, {"word": "opgave", "nl": "Op tijd afronden wordt een zware opgave.", "en": "Finishing on time will be a tough task."}, {"word": "taak", "nl": "Het labo opruimen is de taak van iedereen.", "en": "Tidying the lab is everyone's job."}], "id": "g01"}, {"kind": "group", "type": "verwar", "words": ["examen", "toets", "test"], "note": "Examen = a formal exam, usually at the end of a course or year. Toets = a smaller test at school or in a course during the year. Test = a test in general, often medical, scientific or technical (bloedtest, coronatest).", "examples": [{"word": "examen", "nl": "In juni heb ik vijf examens.", "en": "In June I have five exams."}, {"word": "toets", "nl": "Morgen is er een kleine toets over de woordenschat.", "en": "Tomorrow there's a short vocabulary test."}, {"word": "test", "nl": "De bloedtest was negatief.", "en": "The blood test was negative."}], "id": "g02"}, {"kind": "group", "type": "verwar", "words": ["testen", "toetsen", "examineren"], "note": "Testen = to test something (a product, a sample, a method). Toetsen = to test someone's knowledge, or to check something against a standard. Examineren = to examine a candidate formally, who then passes or fails.", "examples": [{"word": "testen", "nl": "We testen de nieuwe antistof op drie cellijnen.", "en": "We are testing the new antibody on three cell lines."}, {"word": "toetsen", "nl": "De leerkracht toetst de leerstof na elk hoofdstuk.", "en": "The teacher tests the material after each chapter."}, {"word": "examineren", "nl": "Een jury examineert de kandidaten mondeling.", "en": "A jury examines the candidates orally."}], "id": "g03"}, {"kind": "group", "type": "verwar", "words": ["lesgeven", "doceren", "onderwijzen", "opleiden"], "note": "Lesgeven = the everyday word: to teach at a school or give a course. Doceren = to teach at a university or college. Onderwijzen = formal or old-fashioned for teaching. Opleiden = to train someone for a profession, over a longer period.", "examples": [{"word": "lesgeven", "nl": "Ze geeft les in het derde leerjaar.", "en": "She teaches the third year of primary school."}, {"word": "doceren", "nl": "Hij doceert immunologie aan de universiteit.", "en": "He teaches immunology at the university."}, {"word": "onderwijzen", "nl": "Hij onderwees de kinderen lezen en schrijven.", "en": "He taught the children to read and write."}, {"word": "opleiden", "nl": "Het ziekenhuis leidt elk jaar twintig verpleegkundigen op.", "en": "The hospital trains twenty nurses every year."}], "id": "g04"}, {"kind": "group", "type": "verwar", "words": ["uitleggen", "verklaren"], "note": "Uitleggen = to explain how something works or what something means, so that someone understands. Verklaren = to explain why something happens (give the cause), or to declare officially.", "examples": [{"word": "uitleggen", "nl": "Kun je me uitleggen hoe ik de centrifuge gebruik?", "en": "Can you explain how I use the centrifuge?"}, {"word": "verklaren", "nl": "Dat verklaart waarom de cellen niet groeiden.", "en": "That explains why the cells didn't grow."}], "id": "g05"}, {"kind": "group", "type": "verwar", "words": ["verbeteren", "corrigeren / verbeteren", "nakijken / controleren"], "note": "Verbeteren has two meanings: to make something better (improve), and to correct mistakes. Corrigeren is only to correct. Nakijken / controleren = to check work for mistakes, often before or instead of correcting it.", "examples": [{"word": "verbeteren", "nl": "Ik wil mijn uitspraak verbeteren.", "en": "I want to improve my pronunciation."}, {"word": "corrigeren / verbeteren", "nl": "De leerkracht verbetert de examens met een rode pen.", "en": "The teacher corrects the exams with a red pen."}, {"word": "nakijken / controleren", "nl": "Kijk je antwoorden goed na voor je indient.", "en": "Check your answers carefully before you hand in."}], "id": "g06"}, {"kind": "group", "type": "syn", "words": ["afkijken", "spieken", "overschrijven"], "note": "All three are about copying someone else's work. Spieken = cheating in an exam (looking at notes or a neighbour). Afkijken = looking at someone else's work (bij iemand afkijken). Overschrijven = literally copying out text, also someone's homework.", "examples": [{"word": "spieken", "nl": "Hij spiekte met een briefje in zijn mouw.", "en": "He cheated with a note in his sleeve."}, {"word": "afkijken", "nl": "Ze keek af bij haar buurvrouw.", "en": "She copied from the girl next to her."}, {"word": "overschrijven", "nl": "Hij schreef het huiswerk van zijn broer over.", "en": "He copied his brother's homework."}], "id": "g07"}, {"kind": "group", "type": "verwar", "words": ["afleggen (een examen)", "afnemen (een examen)"], "note": "The student legt een examen af (takes it). The teacher or examiner neemt een examen af (gives or administers it).", "examples": [{"word": "afleggen (een examen)", "nl": "Ik leg morgen mijn laatste examen af.", "en": "Tomorrow I'm taking my last exam."}, {"word": "afnemen (een examen)", "nl": "Professor Peeters neemt het examen af.", "en": "Professor Peeters is giving the exam."}], "id": "g08"}, {"kind": "group", "type": "ant", "words": ["slagen voor", "zakken voor"], "note": "Slagen voor = to pass; zakken voor = to fail. Both take 'voor' and 'zijn' in the perfect tense: ik ben geslaagd / gezakt.", "examples": [{"word": "slagen voor", "nl": "Ze is geslaagd voor alle vakken.", "en": "She passed all her subjects."}, {"word": "zakken voor", "nl": "Hij is gezakt voor statistiek.", "en": "He failed statistics."}], "id": "g09"}, {"kind": "group", "type": "verwar", "words": ["afstuderen", "doctoreren", "promoveren"], "note": "Afstuderen = to finish a bachelor's or master's degree. Doctoreren (Flemish) = to be doing a PhD. Promoveren = to obtain the PhD, at the defence. In the Netherlands promoveren is also used for doing the PhD.", "examples": [{"word": "afstuderen", "nl": "Na het afstuderen begon ze aan een doctoraat.", "en": "After graduating she started a PhD."}, {"word": "doctoreren", "nl": "Ik doctoreer al drie jaar in het labo van Freson.", "en": "I've been doing a PhD in the Freson lab for three years."}, {"word": "promoveren", "nl": "Hij promoveerde vorige maand tot doctor in de biomedische wetenschappen.", "en": "Last month he obtained his doctorate in biomedical sciences."}], "id": "g10"}, {"kind": "group", "type": "verwar", "words": ["doctoraatsstudent", "doctorandus", "doctor"], "note": "Doctoraatsstudent = anyone working on a PhD. Doctorandus = in Flanders, a PhD candidate, often close to the end. In the Netherlands drs. is an old master's title. Doctor = someone who has obtained the PhD.", "examples": [{"word": "doctoraatsstudent", "nl": "Als doctoraatsstudent geef ik ook practica.", "en": "As a PhD student I also run lab sessions."}, {"word": "doctorandus", "nl": "De doctorandus verdedigt volgende week.", "en": "The PhD candidate defends next week."}, {"word": "doctor", "nl": "Na haar verdediging is ze doctor.", "en": "After her defence she is a doctor."}], "id": "g11"}, {"kind": "group", "type": "syn", "words": ["vanbuiten leren", "uit het hoofd leren", "memoriseren"], "note": "All mean to learn by heart. Vanbuiten leren is typically Flemish, uit het hoofd leren is used everywhere, and memoriseren is more formal.", "examples": [{"word": "vanbuiten leren", "nl": "We moeten het gedicht vanbuiten leren.", "en": "We have to learn the poem by heart."}, {"word": "uit het hoofd leren", "nl": "Leer de onregelmatige werkwoorden uit het hoofd.", "en": "Learn the irregular verbs by heart."}, {"word": "memoriseren", "nl": "Acteurs memoriseren hun tekst op verschillende manieren.", "en": "Actors memorise their lines in different ways."}], "id": "g12"}, {"kind": "group", "type": "verwar", "words": ["onthouden", "verleren", "vergeetachtig"], "note": "Onthouden = to keep something in your memory. Verleren = to lose a skill through lack of practice (ik ben het fietsen verleerd), not to forget a fact. Vergeetachtig = describing someone who often forgets things.", "examples": [{"word": "onthouden", "nl": "Onthoud goed: de deadline is vrijdag.", "en": "Remember: the deadline is Friday."}, {"word": "verleren", "nl": "Ik heb mijn Frans bijna helemaal verleerd.", "en": "I've almost completely lost my French."}, {"word": "vergeetachtig", "nl": "Mijn grootvader wordt een beetje vergeetachtig.", "en": "My grandfather is getting a bit forgetful."}], "id": "g13"}, {"kind": "group", "type": "verwar", "words": ["te danken hebben aan", "te wijten zijn aan"], "note": "Both give the cause. Te danken hebben aan is for a good result (you are grateful). Te wijten zijn aan is for a bad result (someone or something is to blame).", "examples": [{"word": "te danken hebben aan", "nl": "Ik heb mijn beurs te danken aan een goede aanbeveling.", "en": "I owe my scholarship to a good recommendation."}, {"word": "te wijten zijn aan", "nl": "Het slechte resultaat is te wijten aan een fout in de analyse.", "en": "The bad result is due to a mistake in the analysis."}], "id": "g14"}, {"kind": "group", "type": "verwar", "words": ["iemand van gezicht kennen", "iemand persoonlijk kennen", "iemand door en door kennen", "iets uit het hoofd / vanbuiten kennen"], "note": "Different degrees of kennen: van gezicht = you only recognise the face; persoonlijk = you have actually met and talked; door en door = you know someone or something completely. Uit het hoofd / vanbuiten kennen is about memorised text, not people.", "examples": [{"word": "iemand van gezicht kennen", "nl": "Ik ken de buren alleen van gezicht.", "en": "I only know the neighbours by sight."}, {"word": "iemand persoonlijk kennen", "nl": "Ik ken de auteur persoonlijk.", "en": "I know the author personally."}, {"word": "iemand door en door kennen", "nl": "Zij kent het protocol door en door.", "en": "She knows the protocol inside out."}, {"word": "iets uit het hoofd / vanbuiten kennen", "nl": "Ik ken mijn telefoonnummer nog niet vanbuiten.", "en": "I don't know my phone number by heart yet."}], "id": "g15"}, {"kind": "group", "type": "verwar", "words": ["Wie weet (het)!", "weet ik veel", "te weten komen"], "note": "Wie weet! = maybe, who knows (hopeful or open). Weet ik veel = informal, slightly impatient: I have no idea. Te weten komen = to find out.", "examples": [{"word": "Wie weet (het)!", "nl": "Misschien krijg ik de job, wie weet!", "en": "Maybe I'll get the job, who knows!"}, {"word": "weet ik veel", "nl": "Waarom hij zo laat is? Weet ik veel.", "en": "Why he's so late? No idea."}, {"word": "te weten komen", "nl": "Ik kwam pas gisteren te weten dat ze verhuisd is.", "en": "I only found out yesterday that she has moved."}], "id": "g16"}, {"kind": "group", "type": "verwar", "words": ["onder de knie hebben", "weten van wanten", "ergens in thuis zijn", "in de hand hebben", "bekwaam"], "note": "Onder de knie hebben = you have mastered a skill after practice. Weten van wanten = you are experienced and capable in general. Ergens in thuis zijn = you know a lot about a subject. In de hand hebben = you have a situation under control. Bekwaam = formal adjective for competent.", "examples": [{"word": "onder de knie hebben", "nl": "Ik heb de qPCR nu onder de knie.", "en": "I've now mastered qPCR."}, {"word": "weten van wanten", "nl": "Vraag het aan de labmanager, zij weet van wanten.", "en": "Ask the lab manager, she knows her stuff."}, {"word": "ergens in thuis zijn", "nl": "Hij is goed thuis in structuurbiologie.", "en": "He knows a lot about structural biology."}, {"word": "in de hand hebben", "nl": "De leerkracht heeft de klas goed in de hand.", "en": "The teacher has the class well under control."}, {"word": "bekwaam", "nl": "We zoeken een bekwame technicus.", "en": "We are looking for a competent technician."}], "id": "g17"}, {"kind": "group", "type": "verwar", "words": ["klas", "lokaal", "cursus"], "note": "Klas = the group of pupils (and the school year: in welke klas zit je?). Lokaal = the room itself. Cursus = the course you follow, or a course book.", "examples": [{"word": "klas", "nl": "Onze klas gaat op uitstap naar Brussel.", "en": "Our class is going on a trip to Brussels."}, {"word": "lokaal", "nl": "Het examen is in lokaal 2.14.", "en": "The exam is in room 2.14."}, {"word": "cursus", "nl": "Ik volg een cursus van twaalf weken.", "en": "I'm taking a twelve-week course."}], "id": "g18"}, {"kind": "group", "type": "verwar", "words": ["studie", "studierichting", "opleiding", "vak"], "note": "Studie / studies = your studies in general (na mijn studies). Studierichting = the field you study, chosen at school or university. Opleiding = the whole programme or training. Vak = one subject within it.", "examples": [{"word": "studie", "nl": "Na mijn studies ben ik naar België verhuisd.", "en": "After my studies I moved to Belgium."}, {"word": "studierichting", "nl": "Welke studierichting heb je gekozen?", "en": "Which field of study did you choose?"}, {"word": "opleiding", "nl": "De opleiding duurt vijf jaar.", "en": "The programme takes five years."}, {"word": "vak", "nl": "Biochemie is een verplicht vak.", "en": "Biochemistry is a compulsory subject."}], "id": "g19"}, {"kind": "group", "type": "verwar", "words": ["opschrijven", "overschrijven"], "note": "Opschrijven = to write something down (a number, an idea). Overschrijven = to copy text that already exists, or write it out again.", "examples": [{"word": "opschrijven", "nl": "Schrijf het adres even op.", "en": "Just write down the address."}, {"word": "overschrijven", "nl": "Schrijf de tekst netjes over.", "en": "Copy the text out neatly."}], "id": "g20"}, {"kind": "group", "type": "verwar", "words": ["overslaan", "spijbelen"], "note": "Overslaan = to skip something (a question, a step, a meal, a class), neutral. Spijbelen = to skip school on purpose without a valid reason.", "examples": [{"word": "overslaan", "nl": "Je mag de laatste oefening overslaan.", "en": "You can skip the last exercise."}, {"word": "spijbelen", "nl": "Hij werd betrapt toen hij spijbelde.", "en": "He was caught skipping school."}], "id": "g21"}, {"kind": "group", "type": "verwar", "words": ["bijscholen", "zich omscholen", "opleiden"], "note": "Bijscholen = extra training to stay up to date in your own job. Zich omscholen = retraining for a different job. Opleiden = training someone for a profession from the start.", "examples": [{"word": "bijscholen", "nl": "Huisartsen moeten zich elk jaar bijscholen.", "en": "GPs have to take further training every year."}, {"word": "zich omscholen", "nl": "Ze schoolde zich om tot programmeur.", "en": "She retrained as a programmer."}, {"word": "opleiden", "nl": "De universiteit leidt artsen op.", "en": "The university trains doctors."}], "id": "g22"}, {"kind": "group", "type": "verwar", "words": ["academisch", "universitair", "wetenschappelijk"], "note": "Academisch = related to academic life, style or the academic year. Universitair = belonging to a university (universitair ziekenhuis, universitair diploma). Wetenschappelijk = scientific (research, method, article).", "examples": [{"word": "academisch", "nl": "Het academiejaar begint eind september.", "en": "The academic year starts at the end of September."}, {"word": "universitair", "nl": "Ze heeft een universitair diploma.", "en": "She has a university degree."}, {"word": "wetenschappelijk", "nl": "Dit is niet wetenschappelijk bewezen.", "en": "This hasn't been scientifically proven."}], "id": "g23"}, {"kind": "group", "type": "syn", "words": ["toelatingsexamen", "toelatingsproef"], "note": "Both are tests you must pass to be admitted. Toelatingsexamen is used for formal programmes (geneeskunde). Toelatingsproef is often a practical or artistic test.", "examples": [{"word": "toelatingsexamen", "nl": "Het toelatingsexamen voor geneeskunde is in juli.", "en": "The entrance exam for medicine is in July."}, {"word": "toelatingsproef", "nl": "Voor de dansopleiding is er een toelatingsproef.", "en": "For the dance programme there is an admission test."}], "id": "g24"}, {"kind": "group", "type": "ant", "words": ["theorie", "praktijk"], "note": "Theorie = the ideas and rules; praktijk = how it works in real life, or practical experience. Common pair: in theorie … maar in de praktijk …", "examples": [{"word": "theorie", "nl": "De theorie is duidelijk.", "en": "The theory is clear."}, {"word": "praktijk", "nl": "In de praktijk loopt het vaak anders.", "en": "In practice it often turns out differently."}], "id": "g25"}, {"kind": "group", "type": "ant", "words": ["theoretisch", "praktisch / handig"], "note": "Theoretisch = about ideas, not applied. Praktisch = applied, useful in real life. Handig also means handy, convenient, or good with your hands.", "examples": [{"word": "theoretisch", "nl": "Het eerste semester is erg theoretisch.", "en": "The first semester is very theoretical."}, {"word": "praktisch / handig", "nl": "Een praktisch voorbeeld maakt het duidelijker.", "en": "A practical example makes it clearer."}], "id": "g26"}, {"kind": "group", "type": "ant", "words": ["mondeling", "schriftelijk"], "note": "Mondeling = spoken (oral); schriftelijk = on paper (written). Remember the -e ending before a de-noun: het mondelinge examen, de schriftelijke toets.", "examples": [{"word": "mondeling", "nl": "Het mondelinge examen was makkelijker dan verwacht.", "en": "The oral exam was easier than expected."}, {"word": "schriftelijk", "nl": "De schriftelijke opdracht moet je online indienen.", "en": "You have to submit the written assignment online."}], "id": "g27"}, {"kind": "group", "type": "verwar", "words": ["directeur / directrice", "rector"], "note": "Directeur / directrice = head of a school, company or institute. Rector = head of a university.", "examples": [{"word": "directeur / directrice", "nl": "De directeur van de school belde mijn ouders.", "en": "The head of the school called my parents."}, {"word": "rector", "nl": "De rector hield een toespraak.", "en": "The rector gave a speech."}], "id": "g28"}, {"kind": "group", "type": "verwar", "words": ["universiteit", "hogeschool", "faculteit", "departement"], "note": "Universiteit = an academic university. Hogeschool = a university college, more professionally oriented. Faculteit = a large division of a university (Geneeskunde). Departement = a smaller unit inside a faculty.", "examples": [{"word": "universiteit", "nl": "De KU Leuven is de oudste universiteit van België.", "en": "KU Leuven is the oldest university in Belgium."}, {"word": "hogeschool", "nl": "Ze studeert vroedkunde aan de hogeschool.", "en": "She studies midwifery at a university college."}, {"word": "faculteit", "nl": "De faculteit organiseert een infodag.", "en": "The faculty is organising an open day."}, {"word": "departement", "nl": "Ons departement telt meer dan honderd medewerkers.", "en": "Our department has more than a hundred staff."}], "id": "g29"}, {"kind": "group", "type": "verwar", "words": ["diploma behalen", "certificaat", "attest (doktersattest)"], "note": "Diploma = the official degree at the end of a programme. Certificaat = proof that you completed a course or training. Attest = an official note confirming something, e.g. a doctor's note.", "examples": [{"word": "diploma behalen", "nl": "Ze heeft haar diploma behaald.", "en": "She got her degree."}, {"word": "certificaat", "nl": "Na de bijscholing krijg je een certificaat.", "en": "After the training you get a certificate."}, {"word": "attest (doktersattest)", "nl": "Zonder attest is je afwezigheid ongewettigd.", "en": "Without a note your absence is unexcused."}], "id": "g30"}, {"kind": "group", "type": "verwar", "words": ["verslag", "scriptie"], "note": "Verslag = a report of something that happened (a lab session, a meeting). Scriptie = the thesis that ends a bachelor's or master's programme.", "examples": [{"word": "verslag", "nl": "Het verslag van de vergadering staat online.", "en": "The minutes of the meeting are online."}, {"word": "scriptie", "nl": "Mijn scriptie telt zestig pagina's.", "en": "My thesis is sixty pages long."}], "id": "g31"}, {"kind": "group", "type": "verwar", "words": ["bestuderen", "onderzoeken", "analyseren"], "note": "Bestuderen = to study something closely to understand it. Onderzoeken = to investigate or research, to find something out. Analyseren = to break data or a problem into parts and examine them.", "examples": [{"word": "bestuderen", "nl": "We bestuderen de structuur van het eiwit.", "en": "We are studying the structure of the protein."}, {"word": "onderzoeken", "nl": "De dokter onderzoekt de patiënt.", "en": "The doctor examines the patient."}, {"word": "analyseren", "nl": "Ik analyseer de resultaten met R.", "en": "I analyse the results with R."}], "id": "g32"}, {"kind": "group", "type": "verwar", "words": ["aan bod komen", "van gedachten wisselen over"], "note": "Aan bod komen = a topic gets discussed or covered (subject: the topic). Van gedachten wisselen over = people exchange ideas about something (subject: the people).", "examples": [{"word": "aan bod komen", "nl": "Dit onderwerp komt volgende week aan bod.", "en": "This topic will be covered next week."}, {"word": "van gedachten wisselen over", "nl": "We wisselden van gedachten over het plan.", "en": "We exchanged views on the plan."}], "id": "g33"}]};</script>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">Woordkaarten<small>B1–B2</small></div>
+    <div class="store" id="storeNote">Laden…</div>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="t-cards" aria-selected="true" data-tab="cards">Kaarten</button>
+    <button class="tab" role="tab" id="t-ex" aria-selected="false" data-tab="ex">Oefenen</button>
+    <button class="tab" role="tab" id="t-words" aria-selected="false" data-tab="words">Woorden<span class="n" id="wordCount">0</span></button>
+  </div>
+
+  <!-- KAARTEN -->
+  <section id="p-cards" class="wrap" style="gap:14px">
+    <div class="boxes" id="boxes"></div>
+    <div id="cardHome" style="min-height:360px;display:flex;flex-direction:column">
+      <div id="floatCard">
+        <div class="fc-top">
+          <span id="fcInfo" class="mono">–</span>
+          <span class="switch"><label for="dirSel">Richting</label>
+            <select id="dirSel"><option value="nl">NL → EN</option><option value="en">EN → NL</option></select></span>
+        </div>
+        <button class="card" id="card" aria-label="Kaart omdraaien">
+          <div class="card-in">
+            <div class="face front" id="front"></div>
+            <div class="face back" id="back"></div>
+          </div>
+        </button>
+        <div class="fc-ctl">
+          <button class="rate no" id="rNo">Nog niet <span class="muted kbd-hint" style="font-weight:400">(1)</span></button>
+          <button class="rate yes" id="rYes">Weet ik <span class="muted kbd-hint" style="font-weight:400">(2)</span></button>
+        </div>
+        <div class="pbar" id="pbar" hidden><i id="pfill"></i></div>
+        <div class="fc-sub">
+          <span class="switch"><input type="checkbox" id="autoChk"><label for="autoChk">Passief</label>
+            <select id="autoSec" aria-label="Seconden per kant"><option value="5">5 s</option><option value="8" selected>8 s</option><option value="15">15 s</option><option value="30">30 s</option></select></span>
+          <button class="btn ghost" id="skipBtn" style="padding:4px 8px">Volgende →</button>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="justify-content:space-between">
+      <button class="btn primary" id="popBtn">Zwevend venster openen</button>
+      <span class="note kbd-hint">Spatie = omdraaien · 1 / 2 = beoordelen</span>
+      <span class="note touch-hint">Tik = omdraaien · veeg → weet ik · veeg ← nog niet</span>
+    </div>
+    <div class="panel" id="popFallback" hidden>
+      <h3 style="font-size:16px">Zwevend venster vanuit een bestand</h3>
+      <p class="note" style="margin:0">Your browser doesn't allow a pop-out from inside Claude. Download your deck as a small file, open it in Chrome or Edge on your computer, and press <b>Zweef boven alles</b> there: the card then floats above every app. Re-download after adding words; ratings made in the file stay in that file.</p>
+      <div class="row"><button class="btn primary" id="dlBtn">Download zwevende kaarten (.html)</button><span class="note" id="dlNote"></span></div>
+    </div>
+  </section>
+
+  <!-- OEFENEN -->
+  <section id="p-ex" class="wrap" style="gap:14px" hidden>
+    <div class="panel" id="exSetup">
+      <div class="row" style="justify-content:space-between"><span class="label">Woorden in de mix</span><span class="note" id="exMixNote"></span></div>
+      <div class="chips" id="exWords"></div>
+      <span class="label">Soort oefening</span>
+      <div class="chips" id="exTypes">
+        <button class="chip" aria-pressed="true" data-t="gap">Invuloefening</button>
+        <button class="chip" aria-pressed="true" data-t="prep">Voorzetsel</button>
+        <button class="chip" aria-pressed="true" data-t="order">Woordvolgorde</button>
+        <button class="chip" aria-pressed="true" data-t="context">Welke context past?</button>
+        <button class="chip" aria-pressed="true" data-t="contrast">Verwarbare woorden</button>
+      </div>
+      <div class="row" style="justify-content:space-between">
+        <span class="switch"><label for="exN">Aantal</label><select id="exN"><option>6</option><option selected>8</option><option>12</option></select></span>
+        <button class="btn primary" id="genBtn">Maak oefeningen</button>
+      </div>
+      <p class="note" id="exNote" style="margin:0">Each set mixes all your words. Words you marked “nog niet” get more questions. The first time, Claude asks you to allow it.</p>
+    </div>
+    <div id="exArea"></div>
+  </section>
+
+  <!-- WOORDEN -->
+  <section id="p-words" class="wrap" style="gap:14px" hidden>
+    <div class="panel">
+      <div class="row" style="justify-content:space-between">
+        <label class="label" for="addBox">Nieuwe woorden</label>
+        <div class="row">
+          <label class="btn filebtn" for="fileIn">Lijst openen (.txt / .tsv)</label><input type="file" id="fileIn" accept=".txt,.tsv,.csv,text/plain,text/tab-separated-values" hidden>
+          <label class="btn filebtn" for="photoIn" id="photoLbl" hidden>Foto inlezen</label><input type="file" id="photoIn" accept="image/*" multiple hidden>
+        </div>
+      </div>
+      <textarea id="addBox" placeholder="Plak je lijst: Nederlands [tab] Engels, één per regel&#10;zich ergeren aan&#9;to be annoyed by&#10;het gevolg&#9;consequence&#10;rekening houden met&#9;to take into account&#10;(Engels mag ook leeg blijven)"></textarea>
+      <div class="row" style="justify-content:space-between">
+        <span class="note" id="addNote">Claude adds the article, meaning, verb forms, fixed preposition, an example sentence, and groups related words.</span>
+        <div class="row"><button class="btn" id="addPlain">Zonder Claude</button><button class="btn primary" id="addBtn">Toevoegen</button></div>
+      </div>
+    </div>
+    <div class="row" style="justify-content:space-between">
+      <div class="seg" role="tablist" aria-label="Weergave">
+        <button id="vList" aria-pressed="true">Lijst</button><button id="vGroups" aria-pressed="false">Groepen <span class="n" id="groupCount">0</span></button>
+      </div>
+      <button class="btn ghost" id="regroupBtn" style="padding:6px 10px">Opnieuw groeperen</button>
+    </div>
+    <div id="listView" class="wrap" style="gap:14px">
+      <input type="search" id="filter" placeholder="Zoek in je woorden">
+      <div class="panel" style="padding-block:4px"><div class="wl" id="wordList"></div></div>
+    </div>
+    <div id="groupView" class="wrap" style="gap:12px" hidden></div>
+  </section>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script type="text/plain" id="miniTpl"><!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Zwevende woordkaarten</title>
+<style>
+:root{--bg:#F4F6FA;--s:#fff;--k:#E9EEF6;--l:#D3DCE8;--i:#14233D;--m:#5A6A82;--d:#1F4E9C;--ds:#DDE7F6;--h:#A8661A;--hs:#F6E9D6;--ok:#2E7A4E;--oks:#DDF0E4;--b:#B03F38;--bs:#F7E0DE}
+@media (prefers-color-scheme:dark){:root{--bg:#0D1524;--s:#152038;--k:#1B2944;--l:#2A3A5A;--i:#E4EAF4;--m:#9AA9C2;--d:#86ABEB;--ds:#22365D;--h:#E0A35A;--hs:#3D2E1C;--ok:#6CC594;--oks:#1C3A2B;--b:#EE8A82;--bs:#42221F;color-scheme:dark}}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;background:var(--bg);color:var(--i);font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;padding:10px;display:flex}
+#app{flex:1;display:flex;flex-direction:column;gap:8px;min-height:0}
+.top{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--m);gap:6px}
+button{font:inherit;color:inherit;cursor:pointer}
+.card{flex:1;min-height:0;border:1px solid var(--l);border-radius:12px;background:var(--s);padding:14px 16px;text-align:left;display:flex;flex-direction:column;gap:8px;overflow:auto;border-bottom:4px solid var(--d)}
+.card.het{border-bottom-color:var(--h)}
+.wd{font:600 clamp(22px,8vw,34px)/1.15 Georgia,serif;overflow-wrap:anywhere}
+.art{font:13px ui-monospace,Menlo,monospace;padding:2px 6px;border-radius:5px;background:var(--ds);color:var(--d);margin-right:6px;vertical-align:5px}.art.het{background:var(--hs);color:var(--h)}
+.en{font:600 19px/1.25 Georgia,serif}.ty,.mt span{color:var(--m);font-size:12px}.mt{font-size:13px}
+.ex{font:15px/1.4 Georgia,serif;border-left:2px solid var(--l);padding-left:8px}.ex small{display:block;font:12px system-ui,sans-serif;color:var(--m)}
+.ctl{display:grid;grid-template-columns:1fr 1fr;gap:6px}.r{border:0;border-radius:9px;padding:8px;font-weight:700}.no{background:var(--bs);color:var(--b)}.yes{background:var(--oks);color:var(--ok)}
+.sub{display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:12px;color:var(--m);flex-wrap:wrap}
+.lk{background:none;border:1px solid var(--l);border-radius:7px;padding:3px 8px}.pip{background:var(--d);color:var(--bg);border-color:var(--d);font-weight:600}
+select{background:var(--k);border:1px solid var(--l);border-radius:5px;font:inherit;color:inherit}
+</style></head><body><div id="app">
+<div class="top"><span id="info"></span><span><button class="lk" id="dir">NL → EN</button> <button class="lk pip" id="pip">Zweef boven alles</button></span></div>
+<button class="card" id="card"></button>
+<div class="ctl"><button class="r no" id="no">Nog niet</button><button class="r yes" id="yes">Weet ik</button></div>
+<div class="sub"><label><input type="checkbox" id="auto"> Passief</label><select id="sec"><option value="5">5 s</option><option value="8" selected>8 s</option><option value="15">15 s</option><option value="30">30 s</option></select><button class="lk" id="next">Volgende →</button></div>
+</div>
+<script>
+const W=__WORDS__;const KEY="woordkaarten-mini";let P={};try{P=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){}
+const IV=[0,0,864e5,2592e5,6048e5,18144e5];let dir="nl",flip=false,cur=null,timer=null,doc_=document;
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pr=w=>P[w.nl]||{box:1,due:0};
+function order(){const n=Date.now();return [...W].sort((a,b)=>{const pa=pr(a),pb=pr(b);const da=pa.due<=n,db=pb.due<=n;if(da!==db)return da?-1:1;return pa.box-pb.box||pa.due-pb.due})}
+function pick(){const o=order();cur=o.find(w=>!cur||w.nl!==cur.nl)||o[0];flip=false;draw()}
+function face(w){const art=w.article?`<span class="art ${w.article==="het"?"het":""}">${esc(w.article)}</span>`:"";
+ const nl=`<div class="wd">${art}${esc(w.nl)}</div>`;const en=`<div class="en">${esc(w.en)}</div>`;
+ const det=`<div class="mt">${w.plural?`<div><span>mv.</span> ${esc(w.plural)}</div>`:""}${w.forms?`<div><span>vormen</span> ${esc(w.forms)}</div>`:""}${w.prep?`<div><span>met</span> ${esc(w.prep)}</div>`:""}</div>${w.example?`<div class="ex">${esc(w.example)}<small>${esc(w.exampleEn)}</small></div>`:""}`;
+ if(!flip)return (dir==="nl"?nl:en)+`<div class="ty">${esc(w.type||"")} · tik om om te draaien</div>`;
+ return (dir==="nl"?en+nl.replace("wd","wd\" style=\"font-size:18px"):nl+en)+det}
+function draw(){const d=doc_;if(!cur){d.getElementById("card").textContent="Geen woorden.";return}
+ const c=d.getElementById("card");c.className="card"+(cur.article==="het"?" het":"");c.innerHTML=face(cur);
+ const n=Date.now();d.getElementById("info").textContent=`bak ${pr(cur).box} · ${W.filter(w=>pr(w).due<=n).length} te herhalen`;}
+function rate(ok){if(!cur)return;const p=pr(cur);const box=ok?Math.min(5,p.box+1):1;P[cur.nl]={box,due:Date.now()+IV[box]};try{localStorage.setItem(KEY,JSON.stringify(P))}catch(e){}pick();loop()}
+function loop(){clearTimeout(timer);if(!doc_.getElementById("auto").checked)return;const s=+doc_.getElementById("sec").value*1000;
+ timer=setTimeout(()=>{if(!flip){flip=true;draw();loop()}else{pick();loop()}},s)}
+function bind(d){d.getElementById("card").onclick=()=>{flip=!flip;draw()};d.getElementById("no").onclick=()=>rate(false);d.getElementById("yes").onclick=()=>rate(true);
+ d.getElementById("next").onclick=()=>{pick();loop()};d.getElementById("auto").onchange=loop;d.getElementById("sec").onchange=loop;
+ d.getElementById("dir").onclick=e=>{dir=dir==="nl"?"en":"nl";e.target.textContent=dir==="nl"?"NL → EN":"EN → NL";flip=false;draw()};
+ d.addEventListener("keydown",e=>{if(e.key===" "){e.preventDefault();flip=!flip;draw()}if(e.key==="1")rate(false);if(e.key==="2")rate(true)})}
+bind(document);pick();
+document.getElementById("pip").onclick=async()=>{if(!("documentPictureInPicture" in window)){alert("Use Chrome or Edge (version 116+) for a floating window. Or just make this browser window small.");return}
+ const pw=await documentPictureInPicture.requestWindow({width:340,height:300});
+ document.querySelectorAll("style").forEach(s=>pw.document.head.append(s.cloneNode(true)));
+ const app=document.getElementById("app");pw.document.body.append(app);doc_=pw.document;bind(pw.document);
+ pw.addEventListener("pagehide",()=>{document.body.append(app);doc_=document;bind(document)})};
+<\/script></body></html></script>
+
+<script>
+(() => {
+"use strict";
+const claude = (window.claude && typeof window.claude.use === "function") ? window.claude : { use: async () => null };
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const DAY = 864e5;
+const IV = [0, 0, DAY, 3*DAY, 7*DAY, 21*DAY]; // index = box (1–5)
+const TYPES = {zn:"zelfstandig naamwoord", ww:"werkwoord", bn:"bijvoeglijk naamwoord", bw:"bijwoord", uitdr:"uitdrukking", vz:"voorzetsel", vw:"voegwoord"};
+
+const STARTER = [
+ {nl:"afspraak",article:"de",type:"zn",en:"appointment; agreement",plural:"afspraken",forms:null,prep:"een afspraak maken met iemand",example:"Ik heb morgen een afspraak met de tandarts.",exampleEn:"I have an appointment with the dentist tomorrow."},
+ {nl:"zich ergeren",article:null,type:"ww",en:"to be annoyed (by)",plural:null,forms:"ergerde zich – heeft zich geërgerd",prep:"zich ergeren aan iets/iemand",example:"Ik erger me aan het lawaai van de buren.",exampleEn:"I'm annoyed by the neighbours' noise."},
+ {nl:"gevolg",article:"het",type:"zn",en:"consequence, result",plural:"gevolgen",forms:null,prep:"als gevolg van",example:"Als gevolg van de staking reden er geen treinen.",exampleEn:"As a result of the strike, no trains ran."},
+ {nl:"afhankelijk",article:null,type:"bn",en:"dependent",plural:null,forms:null,prep:"afhankelijk zijn van",example:"Of we gaan fietsen, is afhankelijk van het weer.",exampleEn:"Whether we go cycling depends on the weather."},
+ {nl:"voorwaarde",article:"de",type:"zn",en:"condition",plural:"voorwaarden",forms:null,prep:"op voorwaarde dat",example:"Je mag mee, op voorwaarde dat je op tijd bent.",exampleEn:"You can come along, on condition that you're on time."},
+ {nl:"rekening houden",article:null,type:"uitdr",en:"to take into account",plural:null,forms:"hield rekening – heeft rekening gehouden",prep:"rekening houden met",example:"We moeten rekening houden met de file op de ring.",exampleEn:"We have to take the traffic jam on the ring road into account."},
+ {nl:"onderzoek",article:"het",type:"zn",en:"research; examination",plural:"onderzoeken",forms:null,prep:"onderzoek doen naar",example:"Ze doen onderzoek naar de oorzaak van de ziekte.",exampleEn:"They are researching the cause of the disease."},
+ {nl:"inmiddels",article:null,type:"bw",en:"by now, meanwhile",plural:null,forms:null,prep:null,example:"Inmiddels woon ik al drie jaar in België.",exampleEn:"By now I've been living in Belgium for three years."},
+ {nl:"overleggen",article:null,type:"ww",en:"to consult, to discuss",plural:null,forms:"overlegde – heeft overlegd",prep:"overleggen met iemand over iets",example:"Ik overleg eerst met mijn collega over het plan.",exampleEn:"I'll discuss the plan with my colleague first."},
+ {nl:"ervaring",article:"de",type:"zn",en:"experience",plural:"ervaringen",forms:null,prep:"ervaring hebben met",example:"Heb je al ervaring met lesgeven?",exampleEn:"Do you already have experience with teaching?"},
+ {nl:"bereid",article:null,type:"bn",en:"willing, prepared",plural:null,forms:null,prep:"bereid zijn om te + inf.",example:"Ben je bereid om in het weekend te werken?",exampleEn:"Are you willing to work at the weekend?"},
+ {nl:"tegenvallen",article:null,type:"ww",en:"to be disappointing (sep.)",plural:null,forms:"viel tegen – is tegengevallen (scheidbaar)",prep:"iemand tegenvallen",example:"De film viel me een beetje tegen.",exampleEn:"The film was a bit disappointing to me."}
+];
+
+/* ---------- state & storage ---------- */
+let words = [];           // {id, nl, article, type, en, plural, forms, prep, example, exampleEn, box, due, added, ok, wrong}
+let col = null;           // db collection for this viewer
+let sample = null, downloads = null;
+let useLocal = false;
+const LKEY = "woordkaarten-words";
+
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(()=>t.hidden=true,2600); }
+function uid(){ return "w" + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function clean(w){ const o={...w}; delete o.id; for(const k in o) if(o[k]===undefined) o[k]=null; return o; }
+
+let groups = [];          // {id, kind:"group", type:"syn"|"ant"|"verwar", words:[nl], note, examples:[{word,nl,en}]}
+const GKEY = "woordkaarten-groups";
+function saveLocal(){ try{ localStorage.setItem(LKEY, JSON.stringify(words)); localStorage.setItem(GKEY, JSON.stringify(groups)); }catch(e){} }
+async function replaceGroups(next){
+  const old = groups; groups = next;
+  if(useLocal){ saveLocal(); renderAll(); return; }
+  renderAll();
+  try{
+    for(const g of old) await col.doc(g.id).delete();
+    for(const g of next) await col.doc(g.id).set(clean(g));
+  }catch(e){ toast("Couldn't save the groups. Try “Opnieuw groeperen”."); }
+}
+async function putWord(w){
+  const i = words.findIndex(x=>x.id===w.id); if(i>=0) words[i]=w; else words.push(w);
+  if(useLocal){ saveLocal(); renderAll(); return; }
+  renderAll();
+  try{ await col.doc(w.id).set(clean(w)); }
+  catch(e){ if(e && e.code==="quota_exceeded") toast("Storage is full. Delete some words first."); else toast("Couldn't save. Check your connection."); }
+}
+async function delWord(id){
+  words = words.filter(w=>w.id!==id);
+  if(useLocal){ saveLocal(); renderAll(); return; }
+  renderAll();
+  try{ await col.doc(id).delete(); }catch(e){ toast("Couldn't delete. Try again."); }
+}
+
+async function initStore(){
+  const db = await claude.use("db").catch(()=>null);
+  const user = await claude.use("user").catch(()=>null);
+  const id = user ? await user.id() : null;
+  if(db && id){
+    col = db.collection("data/users/" + id);
+    $("storeNote").textContent = "Saved to your Claude account";
+    col.onSnapshot(snap => {
+      const all = snap.docs.map(d => ({id:d.id, ...d.data()}));
+      words = all.filter(x => x.kind !== "group");
+      groups = all.filter(x => x.kind === "group");
+      renderAll();
+    }, () => { $("storeNote").textContent = "Offline: changes may not save"; });
+  } else {
+    useLocal = true;
+    try{ words = JSON.parse(localStorage.getItem(LKEY) || "[]"); groups = JSON.parse(localStorage.getItem(GKEY) || "[]"); }catch(e){ words=[]; groups=[]; }
+    // Embedded word list: load it on first visit, and add any new words/groups when the file is updated (progress is kept).
+    const SEED = window.__SEED__;
+    if(SEED){
+      let seen = null; try{ seen = localStorage.getItem("woordkaarten-seed"); }catch(e){}
+      if(seen !== SEED.version){
+        const have = new Set(words.map(w=>norm(w.nl)));
+        SEED.words.forEach(w=>{ if(!have.has(norm(w.nl))) words.push({...w}); });
+        const gkey = g => g.type+":"+g.words.map(norm).sort().join("|");
+        const gh = new Set(groups.map(gkey));
+        SEED.groups.forEach(g=>{ if(!gh.has(gkey(g))) groups.push({...g}); });
+        saveLocal(); try{ localStorage.setItem("woordkaarten-seed", SEED.version); }catch(e){}
+      }
+    }
+    $("storeNote").textContent = "Saved on this device";
+    renderAll();
+  }
+}
+
+/* ---------- tabs ---------- */
+document.querySelectorAll(".tab").forEach(b => b.onclick = () => {
+  document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-selected", x===b));
+  ["cards","ex","words"].forEach(t => $("p-"+t).hidden = (t!==b.dataset.tab));
+  if(b.dataset.tab!=="cards") stopAuto(); else loopAuto();
+});
+
+/* ---------- flashcards ---------- */
+let curId = null, flipped = false, dir = "nl", autoT = null, pipWin = null;
+
+function due(w){ return (w.due||0) <= Date.now(); }
+function ordered(){
+  return [...words].sort((a,b)=>{ const da=due(a), db=due(b); if(da!==db) return da?-1:1; return (a.box||1)-(b.box||1) || (a.due||0)-(b.due||0); });
+}
+function current(){ return words.find(w=>w.id===curId) || null; }
+function nextCard(){
+  const o = ordered(); const prev = curId;
+  const n = o.find(w=>w.id!==prev) || o[0] || null;
+  curId = n ? n.id : null; flipped = false; renderCard();
+}
+function highlight(text, nl){
+  let h = esc(text);
+  const toks = String(nl||"").toLowerCase().replace(/\b(zich|zijn|de|het|een)\b/g," ").split(/\s+/).filter(t=>t.length>2);
+  toks.sort((a,b)=>b.length-a.length);
+  if(!toks.length) return h;
+  const stem = toks[0].slice(0, Math.max(4, toks[0].length-3));
+  try{ h = h.replace(new RegExp("(\\S*" + stem.replace(/[.*+?^${}()|[\]\\]/g,"\\$&") + "\\S*)","i"), "<mark>$1</mark>"); }catch(e){}
+  return h;
+}
+const norm = s => String(s||"").toLowerCase().replace(/^(de|het)\s+/,"").trim();
+const GT = {syn:"SYNONIEM", ant:"TEGENGESTELD", verwar:"NIET VERWARREN"};
+const GT_PL = {syn:"Synoniemen", ant:"Tegenstellingen", verwar:"Niet verwarren"};
+function groupsOf(w){ const n = norm(w.nl); return groups.filter(g => (g.words||[]).some(x=>norm(x)===n)); }
+function relHtml(w){
+  const lines = [];
+  for(const g of groupsOf(w)){
+    const others = g.words.filter(x=>norm(x)!==norm(w.nl));
+    if(!others.length) continue;
+    lines.push(`<div><span class="t">${GT[g.type]||g.type}</span>${esc(others.join(", "))}${g.type==="verwar"&&g.note?`<div class="vn">${esc(g.note)}</div>`:""}</div>`);
+  }
+  if(w.syn) lines.push(`<div><span class="t">≈</span>${esc(w.syn)}</div>`);
+  if(w.ant) lines.push(`<div><span class="t">↔</span>${esc(w.ant)}</div>`);
+  return lines.length ? `<div class="rel">${lines.join("")}</div>` : "";
+}
+function artTag(w){ return w.article ? `<span class="art ${w.article==="het"?"het":""}">${esc(w.article)}</span>` : ""; }
+function renderCard(){
+  const doc = pipWin ? pipWin.document : document;
+  const f = doc.getElementById("front"), b = doc.getElementById("back"), card = doc.getElementById("card");
+  if(!f) return;
+  const w = current();
+  card.classList.toggle("flipped", flipped);
+  if(!w){
+    card.classList.remove("het");
+    f.innerHTML = `<div class="empty"><div class="wd">Nog geen woorden</div><p class="muted" style="margin:0">Add your own words in the Woorden tab, or try the deck with 12 example B1–B2 words.</p></div>`;
+    const btns = document.createElement("div"); btns.className="row"; btns.style.justifyContent="center";
+    const a = document.createElement("button"); a.className="btn primary"; a.textContent="Woorden toevoegen"; a.onclick=e=>{e.stopPropagation(); $("t-words").click(); $("addBox").focus();};
+    const s = document.createElement("button"); s.className="btn"; s.textContent="12 voorbeeldwoorden laden"; s.onclick=e=>{e.stopPropagation(); loadStarter();};
+    btns.append(a,s); f.querySelector(".empty").append(btns);
+    b.innerHTML=""; doc.getElementById("fcInfo").textContent="0 woorden";
+    return;
+  }
+  card.classList.toggle("het", w.article==="het");
+  const nlBig = `<div class="wd">${artTag(w)}${esc(w.nl)}</div>`;
+  const enBig = `<div class="en" style="font-size:26px">${esc(w.en)}</div>`;
+  const tyl = `<div class="ty">${esc(TYPES[w.type]||w.type||"")}</div>`;
+  f.innerHTML = (dir==="nl" ? nlBig + tyl : enBig + `<div class="ty">vertaal naar het Nederlands</div>`) + `<div class="hint">Tik of spatie om om te draaien</div>`;
+  const meta = [
+    w.plural ? `<div><span>meervoud</span> ${esc(w.plural)}</div>` : "",
+    w.forms ? `<div><span>vormen</span> ${esc(w.forms)}</div>` : "",
+    w.prep ? `<div><span>gebruik</span> <b>${esc(w.prep)}</b></div>` : ""
+  ].join("");
+  b.innerHTML = (dir==="nl"
+      ? `<div class="en">${esc(w.en)}</div><div class="ty" style="font-family:var(--f-word);font-size:15px;color:var(--ink)">${artTag(w)}${esc(w.nl)}</div>`
+      : `<div class="wd" style="font-size:28px">${artTag(w)}${esc(w.nl)}</div><div class="ty">${esc(w.en)}</div>`)
+    + (meta ? `<div class="meta">${meta}</div>` : "")
+    + (w.example ? `<div class="ex">${highlight(w.example, w.nl)}<small>${esc(w.exampleEn)}</small></div>` : "")
+    + relHtml(w);
+  const nDue = words.filter(due).length;
+  doc.getElementById("fcInfo").textContent = `bak ${w.box||1} · ${nDue} te herhalen · ${words.length} woorden`;
+}
+function renderBoxes(){
+  const c=[0,0,0,0,0]; words.forEach(w=>c[Math.min(5,Math.max(1,w.box||1))-1]++);
+  $("boxes").innerHTML = c.map((n,i)=>`<div class="bx"><span>bak ${i+1}</span><b>${n}</b></div>`).join("");
+}
+function flip(){ if(!current()) return; flipped=!flipped; renderCard(); loopAuto(); }
+function rate(ok){
+  const w = current(); if(!w) return;
+  const box = ok ? Math.min(5,(w.box||1)+1) : 1;
+  const nw = {...w, box, due: Date.now()+IV[box], ok:(w.ok||0)+(ok?1:0), wrong:(w.wrong||0)+(ok?0:1), unknown: !ok};
+  putWord(nw); nextCard(); loopAuto();
+}
+function stopAuto(){ clearTimeout(autoT); const d=pipWin?pipWin.document:document; const p=d.getElementById("pbar"); if(p) p.hidden=true; }
+function loopAuto(){
+  clearTimeout(autoT);
+  const d = pipWin ? pipWin.document : document;
+  const on = d.getElementById("autoChk").checked && (pipWin || !$("p-cards").hidden);
+  const bar = d.getElementById("pbar"), fill = d.getElementById("pfill");
+  bar.hidden = !on; if(!on || !current()) return;
+  const ms = +d.getElementById("autoSec").value * 1000;
+  fill.style.transition="none"; fill.style.width="0";
+  void fill.offsetWidth;
+  if(!matchMedia("(prefers-reduced-motion: reduce)").matches){ fill.style.transition=`width ${ms}ms linear`; fill.style.width="100%"; }
+  autoT = setTimeout(()=>{ if(!flipped){ flipped=true; renderCard(); } else nextCard(); loopAuto(); }, ms);
+}
+function bindCard(doc){
+  const cardEl = doc.getElementById("card");
+  let sx = 0, sy = 0, dx = 0, dy = 0, swiping = false, justSwiped = false;
+  cardEl.onclick = () => { if(justSwiped){ justSwiped = false; return; } flip(); };
+  cardEl.addEventListener("touchstart", e => { const t = e.touches[0]; sx = t.clientX; sy = t.clientY; dx = dy = 0; swiping = true; }, {passive:true});
+  cardEl.addEventListener("touchmove", e => {
+    if(!swiping) return; const t = e.touches[0]; dx = t.clientX - sx; dy = t.clientY - sy;
+    const horiz = Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy);
+    cardEl.classList.toggle("swipe-r", horiz && dx > 0); cardEl.classList.toggle("swipe-l", horiz && dx < 0);
+  }, {passive:true});
+  cardEl.addEventListener("touchend", () => {
+    swiping = false; cardEl.classList.remove("swipe-r","swipe-l");
+    if(Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.5 && current()){ justSwiped = true; setTimeout(()=>justSwiped=false, 400); rate(dx > 0); }
+  });
+  doc.getElementById("rNo").onclick = () => rate(false);
+  doc.getElementById("rYes").onclick = () => rate(true);
+  doc.getElementById("skipBtn").onclick = () => { nextCard(); loopAuto(); };
+  doc.getElementById("autoChk").onchange = loopAuto;
+  doc.getElementById("autoSec").onchange = loopAuto;
+  doc.getElementById("dirSel").onchange = e => { dir = e.target.value; flipped=false; renderCard(); };
+}
+function keys(e){
+  const tag = (e.target.tagName||"").toLowerCase(); if(tag==="textarea"||tag==="input"||tag==="select") return;
+  if(!pipWin && $("p-cards").hidden) return;
+  if(e.key===" "){ e.preventDefault(); flip(); }
+  else if(e.key==="1") rate(false); else if(e.key==="2") rate(true);
+  else if(e.key==="ArrowRight"){ nextCard(); loopAuto(); }
+}
+document.addEventListener("keydown", keys);
+bindCard(document);
+
+/* floating window */
+if(!("documentPictureInPicture" in window) && matchMedia("(hover:none) and (pointer:coarse)").matches) $("popBtn").hidden = true;
+$("popBtn").onclick = async () => {
+  if(pipWin){ pipWin.close(); return; }
+  if(!("documentPictureInPicture" in window)){ $("popFallback").hidden=false; return; }
+  try{
+    const w = await documentPictureInPicture.requestWindow({width:360, height:340});
+    document.querySelectorAll("link[rel=stylesheet], style").forEach(s => w.document.head.append(s.cloneNode(true)));
+    const th = document.documentElement.getAttribute("data-theme"); if(th) w.document.documentElement.setAttribute("data-theme", th);
+    w.document.body.classList.add("pip");
+    w.document.body.append($("floatCard"));
+    pipWin = w; w.document.addEventListener("keydown", keys);
+    $("popBtn").textContent = "Zwevend venster sluiten";
+    w.addEventListener("pagehide", () => {
+      const fc = w.document.getElementById("floatCard");
+      if(fc) $("cardHome").append(document.adoptNode(fc));
+      pipWin = null; $("popBtn").textContent = "Zwevend venster openen"; renderCard(); loopAuto();
+    });
+    renderCard(); loopAuto();
+  }catch(e){ $("popFallback").hidden = false; }
+};
+$("dlBtn").onclick = async () => {
+  if(!words.length){ $("dlNote").textContent = "Add some words first."; return; }
+  if(!downloads){ $("dlNote").textContent = "Downloads aren't available in this view."; return; }
+  const data = words.map(w=>({nl:w.nl,article:w.article||null,type:TYPES[w.type]||w.type||"",en:w.en||"",plural:w.plural||null,forms:w.forms||null,prep:w.prep||null,example:w.example||null,exampleEn:w.exampleEn||null}));
+  const html = $("miniTpl").textContent.replace("<\\/script>","</scr"+"ipt>").replace("__WORDS__", JSON.stringify(data).replace(/</g,"\\u003c"));
+  try{ await downloads.save({filename:"zwevende-woordkaarten.html", data:html}); $("dlNote").textContent="Open the file in Chrome or Edge."; }
+  catch(e){ $("dlNote").textContent = e && e.code==="declined" ? "Download cancelled." : "Couldn't save the file here."; }
+};
+
+/* ---------- words tab ---------- */
+let editId = null, confirmId = null;
+function renderList(){
+  const q = $("filter").value.trim().toLowerCase();
+  const list = [...words].sort((a,b)=>(b.added||0)-(a.added||0)).filter(w => !q || (w.nl+" "+(w.en||"")).toLowerCase().includes(q));
+  $("wordCount").textContent = words.length;
+  const el = $("wordList");
+  if(!words.length){ el.innerHTML = `<p class="note" style="padding:12px 0;margin:0">Your words will appear here. Add a few above.</p>`; return; }
+  if(!list.length){ el.innerHTML = `<p class="note" style="padding:12px 0;margin:0">No word matches “${esc(q)}”.</p>`; return; }
+  el.innerHTML = list.map(w => {
+    if(w.id===editId) return `<div class="wi" data-id="${w.id}"><div class="edit">
+      ${["nl","article","en","type","plural","forms","prep"].map(k=>`<label>${{nl:"Woord",article:"Lidwoord (de/het)",en:"Betekenis",type:"Woordsoort",plural:"Meervoud",forms:"Vormen",prep:"Gebruik / voorzetsel"}[k]}<input type="text" id="e-${k}" value="${esc(w[k]||"")}"></label>`).join("")}
+      <label class="full">Voorbeeldzin<input type="text" id="e-example" value="${esc(w.example||"")}"></label>
+      <label class="full">Vertaling<input type="text" id="e-exampleEn" value="${esc(w.exampleEn||"")}"></label>
+      <div class="row full"><button class="btn primary" data-a="save">Opslaan</button><button class="btn ghost" data-a="cancel">Annuleren</button></div></div></div>`;
+    const conf = w.id===confirmId ? `<span class="confirm">Verwijderen? <button class="iconbtn" style="color:var(--bad)" data-a="del2">Ja</button><button class="iconbtn" data-a="nodel">Nee</button></span>`
+      : `<button class="iconbtn" data-a="edit">Bewerk</button><button class="iconbtn" data-a="del">Verwijder</button>`;
+    return `<div class="wi" data-id="${w.id}"><div class="w">${artTag(w)}${esc(w.nl)} <span class="lv">bak ${w.box||1}</span>${isFocus(w)?` <span class="lv" style="color:var(--bad);background:var(--bad-soft)">nog niet</span>`:""}</div><div class="acts">${conf}</div>
+      <div class="d">${esc(w.en||"")}${w.prep?` · <i>${esc(w.prep)}</i>`:""}</div></div>`;
+  }).join("");
+}
+$("wordList").onclick = e => {
+  const a = e.target.closest("[data-a]"); if(!a) return;
+  const id = a.closest(".wi").dataset.id; const w = words.find(x=>x.id===id);
+  const act = a.dataset.a;
+  if(act==="edit"){ editId=id; confirmId=null; renderList(); }
+  else if(act==="cancel"){ editId=null; renderList(); }
+  else if(act==="del"){ confirmId=id; renderList(); }
+  else if(act==="nodel"){ confirmId=null; renderList(); }
+  else if(act==="del2"){ confirmId=null; if(curId===id) curId=null; delWord(id); }
+  else if(act==="save" && w){
+    const nw={...w}; ["nl","article","en","type","plural","forms","prep","example","exampleEn"].forEach(k=>{ const v=$("e-"+k).value.trim(); nw[k]= v||null; });
+    if(!nw.nl){ toast("A word can't be empty."); return; }
+    if(nw.article && !/^(de|het|de\/het)$/.test(nw.article)) nw.article=null;
+    editId=null; putWord(nw); toast("Opgeslagen");
+  }
+};
+$("filter").oninput = renderList;
+
+const ADD_NOTE = "Claude adds the article, meaning, verb forms, fixed preposition, an example sentence, and groups related words.";
+/* One entry per line: "nl<TAB>en" (also accepts "nl = en"). Strips list numbering and bullets. */
+function parseText(text){
+  return String(text||"").replace(/\r/g,"").split("\n").map(l=>l.replace(/^\s*(?:[-•*·]|\d+[.)])\s+/,"").trim()).filter(Boolean).map(l=>{
+    let nl, en = "";
+    if(l.includes("\t")){ const parts = l.split("\t").map(p=>p.trim()).filter(Boolean); nl = parts[0]||""; en = parts.slice(1).join("; "); }
+    else { const i = l.indexOf("="); if(i>0){ nl = l.slice(0,i).trim(); en = l.slice(i+1).trim(); } else nl = l; }
+    return {nl: nl.replace(/[;,]\s*$/,""), en};
+  }).filter(x=>x.nl && !/^(nederlands|dutch|nl|woord)$/i.test(x.nl));
+}
+function parseLines(){
+  const seen = new Set();
+  return parseText($("addBox").value).filter(x=>{
+    const k = norm(x.nl); if(!k || seen.has(k) || words.some(w=>norm(w.nl)===k)) return false; seen.add(k); return true;
+  });
+}
+async function addWords(list){
+  const now = Date.now(); let added = 0;
+  for(let i=0;i<list.length;i++){
+    const x = list[i];
+    let nl = String(x.nl||"").trim(), article = x.article||null;
+    const m = nl.match(/^(de|het)\s+(.+)$/i); if(m){ article = article || m[1].toLowerCase(); nl = m[2]; }
+    if(!nl || words.some(w=>norm(w.nl)===norm(nl))) continue;
+    await putWord({id:uid(), nl, article:/^(de|het|de\/het)$/.test(article||"")?article:null, type:x.type||null, en:x.en||"", plural:x.plural||null, forms:x.forms||null, prep:x.prep||null, example:x.example||null, exampleEn:x.exampleEn||null, syn:x.syn||null, ant:x.ant||null, box:1, due:0, added:now+i, ok:0, wrong:0});
+    added++;
+  }
+  if(!curId) nextCard();
+  return added;
+}
+function loadStarter(){ addWords(STARTER).then(n=>{ toast("12 voorbeeldwoorden toegevoegd"); if(sample) regroup(true); }); }
+
+$("addPlain").onclick = async () => {
+  const list = parseLines(); if(!list.length){ toast("Nothing new to add."); return; }
+  const n = await addWords(list); $("addBox").value=""; toast(`${n} toegevoegd`);
+};
+
+async function enrich(chunk){
+  const prompt = `You are a Dutch learner's dictionary for an adult at CEFR B1–B2 whose support language is English. They live in Flanders; use standard Dutch.
+Each line is a Dutch word OR a whole phrase/expression, sometimes with the learner's own English after "=". Keep phrases whole; keep the learner's English as "en" when given.
+Reply with only a JSON array, one object per input line, in the same order:
+[{"nl":"as a learner should learn it: nouns WITHOUT the article; reflexive verbs with 'zich'; phrases kept whole in their dictionary form","article":"de"|"het"|"de/het"|null,"type":"zn"|"ww"|"bn"|"bw"|"uitdr"|"vz"|"vw","en":"short English meaning(s)","plural":"plural for nouns, else null","forms":"verbs only: 'imperfectum sg – perfectum', e.g. 'werkte – heeft gewerkt'; add '(scheidbaar)' for separable verbs; else null","prep":"the fixed preposition or construction it is used with, e.g. 'zich ergeren aan iets', 'op voorwaarde dat', or null","example":"one natural B1–B2 sentence using it in its most typical context","exampleEn":"English translation of the example","syn":"1–2 common Dutch synonyms, comma-separated, or null","ant":"a common Dutch opposite, or null"}]
+
+Lines:
+${chunk.map(x=>"- "+x.nl+(x.en?" = "+x.en:"")).join("\n")}`;
+  const res = await sample.json(prompt, {modelTier:"quick"});
+  const arr = Array.isArray(res) ? res : [];
+  return chunk.map((x,i)=>{ const r = arr[i] && typeof arr[i]==="object" ? arr[i] : {}; return {...r, nl:r.nl||x.nl, en:x.en||r.en||""}; });
+}
+
+$("addBtn").onclick = async () => {
+  const list = parseLines(); if(!list.length){ toast("Nothing new to add."); return; }
+  if(!sample){ const n = await addWords(list); $("addBox").value=""; toast(`${n} added without details (Claude isn't available here)`); return; }
+  const btn=$("addBtn"); btn.disabled=true;
+  let total = 0, failed = false;
+  try{
+    for(let i=0;i<list.length;i+=20){
+      const chunk = list.slice(i,i+20);
+      $("addNote").textContent = `Claude is looking up words ${i+1}–${Math.min(i+20,list.length)} of ${list.length}…`;
+      let rows;
+      try{ rows = await enrich(chunk); }
+      catch(e){
+        if(e && (e.code==="not_granted"||e.code==="sampling_disabled")) sample=null;
+        failed = true; rows = chunk;
+        if(!sample || (e && e.code==="rate_limited")){ total += await addWords(list.slice(i)); break; }
+      }
+      total += await addWords(rows);
+    }
+    $("addBox").value="";
+    toast(failed ? `${total} added; some without details (Claude couldn't fill them in)` : `${total} woord${total===1?"":"en"} toegevoegd`);
+    if(sample && total) await regroup(true);
+  }finally{ btn.disabled=false; $("addNote").textContent = ADD_NOTE; }
+};
+
+/* --- import from a text file --- */
+$("fileIn").onchange = async e => {
+  const f = e.target.files && e.target.files[0]; e.target.value=""; if(!f) return;
+  try{
+    const text = await f.text();
+    const rows = parseText(text);
+    if(!rows.length){ toast("No words found in that file."); return; }
+    const box = $("addBox"); box.value = (box.value.trim() ? box.value.trim()+"\n" : "") + rows.map(r=>r.nl+(r.en?"\t"+r.en:"")).join("\n");
+    toast(`${rows.length} regels geladen. Check them, then press Toevoegen.`);
+  }catch(err){ toast("Couldn't read that file. Save it as plain text (.txt or .tsv)."); }
+};
+
+/* --- import from photos --- */
+let imgLimits = null;
+$("photoIn").onchange = async e => {
+  const files = [...(e.target.files||[])]; e.target.value=""; if(!files.length || !sample) return;
+  const max = imgLimits ? imgLimits.maxCount : 1;
+  const use = files.slice(0, max);
+  const lbl = $("photoLbl"); lbl.style.pointerEvents="none"; lbl.style.opacity=".5";
+  $("addNote").textContent = `Claude is reading ${use.length} photo${use.length>1?"s":""}…`;
+  try{
+    const res = await sample.json(`The image${use.length>1?"s show":" shows"} a Dutch vocabulary list: a textbook page, handwritten notes, a table or a screenshot.
+Extract every Dutch word or phrase in reading order, with its English translation if one is shown next to it. Keep phrases and expressions whole. Keep the article (de/het) if it is printed with the noun. Ignore headings, page numbers and exercise instructions. If no English is shown, use "".
+Reply with only a JSON array: [{"nl":"...","en":"..."}]`, {images: use, cache:false});
+    const rows = (Array.isArray(res)?res:[]).filter(r=>r && r.nl).map(r=>({nl:String(r.nl).trim(), en:String(r.en||"").trim()}));
+    if(!rows.length){ toast("No words found on the photo. Try a sharper, straight photo."); return; }
+    const box = $("addBox"); box.value = (box.value.trim() ? box.value.trim()+"\n" : "") + rows.map(r=>r.nl+(r.en?"\t"+r.en:"")).join("\n");
+    toast(`${rows.length} woorden gevonden. Check them, then press Toevoegen.`);
+    box.focus();
+  }catch(err){
+    const c = err && err.code;
+    toast(c==="image_rejected" ? "That image can't be read. Use a JPG or PNG under 20 MB." : c==="rate_limited" ? "Too many requests. Try again in a minute." : "Claude couldn't read the photo. Try again or paste the list.");
+  }finally{
+    lbl.style.pointerEvents=""; lbl.style.opacity=""; $("addNote").textContent = ADD_NOTE;
+    if(files.length>max) toast(`Only the first ${max} photos were read.`);
+  }
+};
+
+/* --- groups: synonyms, opposites, easily confused --- */
+let regrouping = false;
+async function regroup(quiet){
+  if(!sample){ if(!quiet) toast("Grouping needs Claude, which isn't available in this view."); return; }
+  if(words.length < 2 || regrouping) return;
+  regrouping = true; const btn=$("regroupBtn"); btn.disabled=true; btn.textContent="Groeperen…";
+  const list = [...words].sort((a,b)=>a.nl.localeCompare(b.nl,"nl")).slice(0,400);
+  const prompt = `You help an adult learner of Dutch (CEFR B1–B2, support language English, lives in Flanders) see how the words on their list relate.
+Their list (Dutch — English):
+${list.map(w=>`- ${w.nl} — ${w.en||"?"}`).join("\n")}
+
+Find meaningful groups among THESE entries only:
+- "syn": near-synonyms (same core meaning)
+- "ant": opposites
+- "verwar": entries a learner easily mixes up (similar meaning, similar form, or the same English translation) but which are used in different contexts, registers or constructions — e.g. kennen/weten, zetten/leggen/stellen, toch/maar.
+Each group has 2–5 entries copied EXACTLY as written in the list. An entry may be in more than one group. Only make groups that are genuinely useful; leave entries without a real partner out. Prefer "verwar" when near-synonyms differ in usage.
+For every group:
+- "note": 1–3 short sentences in English that make the difference in meaning, register or typical context clear (for "ant", just what each describes).
+- "examples": one short natural B1–B2 Dutch sentence per entry that shows its typical context, with an English translation.
+Reply with only JSON: {"groups":[{"type":"syn"|"ant"|"verwar","words":["..."],"note":"...","examples":[{"word":"...","nl":"...","en":"..."}]}]}`;
+  try{
+    const res = await sample.json(prompt, {cache:false});
+    const byNorm = new Map(words.map(w=>[norm(w.nl), w.nl]));
+    const next = (res && Array.isArray(res.groups) ? res.groups : []).map(g=>{
+      const ws = [...new Set((g.words||[]).map(x=>byNorm.get(norm(x))).filter(Boolean))];
+      return {id:"g"+uid(), kind:"group", type:["syn","ant","verwar"].includes(g.type)?g.type:"verwar", words:ws, note:String(g.note||""),
+        examples:(Array.isArray(g.examples)?g.examples:[]).filter(x=>x&&x.nl).map(x=>({word:byNorm.get(norm(x.word))||String(x.word||""), nl:String(x.nl), en:String(x.en||"")}))};
+    }).filter(g=>g.words.length>=2);
+    await replaceGroups(next);
+    if(!quiet) toast(next.length ? `${next.length} groepen gevonden` : "No clear groups among your words yet.");
+  }catch(e){
+    const c = e && e.code;
+    if(c==="not_granted"||c==="sampling_disabled") sample=null;
+    if(!quiet || c==="rate_limited") toast(c==="rate_limited" ? "Too many requests. Try grouping again in a minute." : "Claude couldn't group the words. Try “Opnieuw groeperen”.");
+  }finally{ regrouping=false; btn.disabled=false; btn.textContent="Opnieuw groeperen"; }
+}
+$("regroupBtn").onclick = () => regroup(false);
+
+function setView(v){
+  $("vList").setAttribute("aria-pressed", v==="list"); $("vGroups").setAttribute("aria-pressed", v==="groups");
+  $("listView").hidden = v!=="list"; $("groupView").hidden = v!=="groups";
+}
+$("vList").onclick = () => setView("list");
+$("vGroups").onclick = () => setView("groups");
+
+function renderGroups(){
+  const live = groups.map(g=>({...g, words:(g.words||[]).filter(x=>words.some(w=>norm(w.nl)===norm(x)))})).filter(g=>g.words.length>=2);
+  $("groupCount").textContent = live.length;
+  const el = $("groupView");
+  if(!live.length){
+    el.innerHTML = `<div class="panel"><p class="note" style="margin:0">${words.length<2 ? "Add a few words first." : "No groups yet. Groups are made after you add words with Claude, or press “Opnieuw groeperen”."}</p></div>`;
+    return;
+  }
+  const order = {verwar:0, syn:1, ant:2};
+  live.sort((a,b)=>order[a.type]-order[b.type]);
+  el.innerHTML = live.map(g=>{
+    const ex = (g.examples||[]).filter(x=>g.words.some(w=>norm(w)===norm(x.word)));
+    return `<div class="grp"><div class="grp-h"><span class="gt ${g.type}">${GT_PL[g.type]}</span></div>
+      <div>${g.words.map(x=>{ const w=words.find(y=>norm(y.nl)===norm(x)); return `<span class="gw">${w?artTag(w):""}${esc(x)}</span>`; }).join(" ")}</div>
+      ${g.note?`<div class="gnote">${esc(g.note)}</div>`:""}
+      ${ex.length?`<div class="gex">${ex.map(x=>`<b>${esc(x.word)}</b><span>${highlight(x.nl, x.word)}<small>${esc(x.en)}</small></span>`).join("")}</div>`:""}</div>`;
+  }).join("");
+}
+
+/* ---------- exercises ---------- */
+let exSet = [], exI = 0, exScore = 0, exCtl = null, exRes = {}, exPlan = [];
+const isFocus = w => !!w.unknown || ((w.box||1)===1 && (w.wrong||0)>0);
+function weight(w){
+  if(isFocus(w)) return 5;
+  const b = w.box||1;
+  return b===1 ? 2.5 : b===2 ? 2 : b===3 ? 1.2 : b===4 ? 0.8 : 0.5;
+}
+/* Decide which words get how many questions: every "nog niet" word gets 2–3,
+   the rest of the set is a weighted draw over all other words (one question each). */
+function makePlan(n){
+  const focus = words.filter(isFocus), rest = words.filter(w=>!isFocus(w));
+  const count = new Map();
+  const budget = rest.length ? Math.ceil(n*0.6) : n;          // keep ~40% of the set for the other words
+  const fids = shuffle(focus).slice(0, budget).map(w=>w.id);
+  fids.forEach(id => count.set(id, 1));                       // every "nog niet" word at least once…
+  for(let k=0; sum() < budget && fids.some(id=>count.get(id)<3); k++){   // …then extra rounds, up to 3 each
+    const id = fids[k % fids.length]; if(count.get(id) < 3) count.set(id, count.get(id)+1);
+  }
+  function sum(){ let s=0; count.forEach(v=>s+=v); return s; }
+  let pool = shuffle(rest);
+  while(sum() < n && pool.length){
+    const tot = pool.reduce((s,w)=>s+weight(w),0); let r = Math.random()*tot, k = 0;
+    for(; k<pool.length-1; k++){ r -= weight(pool[k]); if(r<=0) break; }
+    count.set(pool[k].id, 1); pool.splice(k,1);
+  }
+  let i = 0; const ids = [...count.keys()];
+  while(sum() < n && ids.length){ const id = ids[i++ % ids.length]; if(count.get(id) < 3) count.set(id, count.get(id)+1); else if(ids.every(x=>count.get(x)>=3)) break; }
+  return [...count].map(([id,c]) => ({w: words.find(x=>x.id===id), c})).filter(p=>p.w)
+    .sort((a,b)=> (isFocus(b.w)-isFocus(a.w)) || b.c-a.c || a.w.nl.localeCompare(b.w.nl,"nl"));
+}
+function renderExWords(){
+  const nFocus = words.filter(isFocus).length;
+  $("exMixNote").textContent = words.length ? `${words.length} woorden · ${nFocus} nog niet gekend` : "";
+  if(!words.length){ $("exWords").innerHTML = `<span class="note">Add words first in the Woorden tab.</span>`; return; }
+  const list = [...words].sort((a,b)=>(isFocus(b)-isFocus(a)) || a.nl.localeCompare(b.nl,"nl"));
+  const shown = list.slice(0, 24);
+  $("exWords").innerHTML = shown.map(w=>`<span class="mix${isFocus(w)?" focus":""}">${esc(w.nl)}${isFocus(w)?"<i>extra</i>":""}</span>`).join("")
+    + (list.length>shown.length ? `<span class="mix"><i>+${list.length-shown.length} meer</i></span>` : "");
+}
+$("exTypes").onclick = e => { const c=e.target.closest(".chip"); if(!c) return; c.setAttribute("aria-pressed", c.getAttribute("aria-pressed")!=="true"); };
+
+const TYPE_LABEL = {gap:"INVULOEFENING", prep:"VOORZETSEL", order:"WOORDVOLGORDE", context:"CONTEXT", contrast:"NIET VERWARREN"};
+function shuffle(a){ a=[...a]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+$("genBtn").onclick = async () => {
+  const types = [...$("exTypes").querySelectorAll('[aria-pressed="true"]')].map(c=>c.dataset.t);
+  if(!words.length){ $("exNote").textContent="Add words first in the Woorden tab."; return; }
+  if(!types.length){ $("exNote").textContent="Pick at least one exercise type."; return; }
+  if(!sample){ $("exNote").textContent="Exercises need Claude, which isn't available in this view. Open the page in claude.ai."; return; }
+  exPlan = makePlan(+$("exN").value);
+  const n = exPlan.reduce((s,p)=>s+p.c, 0);   // fewer when you have only a couple of words (max 3 per word)
+  const ws = exPlan.map(p=>p.w);
+  exCtl = new AbortController();
+  $("exArea").innerHTML = `<div class="ex-card"><div class="thinking"><span class="dot"></span><span id="thinkTxt">Claude schrijft ${n} oefeningen…</span></div><div><button class="btn ghost" id="stopGen">Stop</button></div></div>`;
+  $("stopGen").onclick = () => exCtl.abort();
+  $("genBtn").disabled = true;
+  const prompt = `You are an experienced teacher of Dutch as a second language writing exercises for an adult at CEFR B1–B2 (support language English, lives in Flanders; standard Dutch, Belgian usage fine).
+Goal: practise using these target words in the RIGHT CONTEXT — correct collocations, fixed prepositions, register, word forms and word order.
+
+Target words, each with the exact number of exercises to write for it:
+${exPlan.map(p=>`- ${p.w.nl} → ${p.c} exercise${p.c>1?"s":""}${p.w.article?" [article: "+p.w.article+"]":""}${p.w.en?" ("+p.w.en+")":""}${p.w.prep?" — gebruik: "+p.w.prep:""}${p.w.forms?" — vormen: "+p.w.forms:""}${groupsOf(p.w).map(g=>` — ${g.type==="verwar"?"easily confused with":g.type==="syn"?"near-synonym of":"opposite of"}: ${g.words.filter(x=>norm(x)!==norm(p.w.nl)).join(", ")}${g.type==="verwar"&&g.note?" ("+g.note+")":""}`).join("")}`).join("\n")}
+
+Write exactly ${n} exercises in total, following those counts. When a word gets more than one exercise, use a different type and a different context each time. Use only these types: ${types.join(", ")}. Put "word" exactly as listed (without the article). Shuffle the order so the same word never comes twice in a row.
+- "gap": a natural sentence with one blank written as ___ where a target word belongs in its correct form (conjugation, plural, adjective ending, separable verb split). 4 options, same word class, all plausible; exactly one correct.
+- "prep": a sentence with ___ for the missing preposition, conjunction or particle of a fixed combination with the target word (e.g. zich ergeren AAN, rekening houden MET, op voorwaarde DAT, bereid zijn OM). 4 short options.
+- "order": a sentence built around the target word that tests Dutch word order (inversion after a fronted element, verb-final in a subordinate clause after omdat/dat/als/hoewel/terwijl, separable verbs, om … te + infinitive). Give "tokens": the words of the sentence in random order, lower case except names, no punctuation; and "answer": the full correct sentence with capital and final punctuation. Only one word order may be correct.
+- "context": prompt "In welke zin is «WORD» goed gebruikt?" with 4 sentences: one correct; the others wrong in meaning, collocation, register or construction (never just a spelling mistake).
+- "contrast": only for a target word that has an "easily confused with" or "near-synonym of" partner above. A sentence with ___ whose context makes exactly one of those words right; the options are the target word and its partners (in the correct form), plus one more plausible distractor if there are fewer than 3. The "explain" must state the difference in usage. If no planned word has such a partner, use the other types instead.
+Vary the position of the correct option. Sentences must sound like real everyday or work Dutch, 8–18 words.
+"explain": 1–2 short sentences in English giving the rule or why the other options fail.
+
+Reply with only JSON:
+{"exercises":[{"type":"gap"|"prep"|"context"|"contrast","word":"<target word>","prompt":"...","options":["...","...","...","..."],"answer":0,"explain":"..."},{"type":"order","word":"<target word>","prompt":"Zet de woorden in de goede volgorde.","tokens":["..."],"answer":"...","explain":"..."}]}`;
+  try{
+    const res = await sample.json(prompt, {signal:exCtl.signal, cache:false, onText:({text})=>{ const m=text.match(/"type"/g); if(m && $("thinkTxt")) $("thinkTxt").textContent=`Oefening ${Math.min(m.length,n)} van ${n}…`; }});
+    const list = (res && Array.isArray(res.exercises) ? res.exercises : []).filter(x=>x && x.type && x.prompt);
+    exSet = list.map(x => {
+      if(x.type==="order"){ const toks = Array.isArray(x.tokens)&&x.tokens.length ? x.tokens.map(String) : String(x.answer||"").replace(/[.,!?;:]/g,"").toLowerCase().split(/\s+/); return {...x, tokens: shuffle(toks)}; }
+      const opts = (x.options||[]).map(String); const right = opts[+x.answer] ?? opts[0];
+      const sh = shuffle(opts); return {...x, options: sh, answer: sh.indexOf(right)};
+    }).filter(x => x.type==="order" ? x.answer : x.options.length>=2 && x.answer>=0);
+    if(!exSet.length) throw {code:"invalid_json"};
+    exI = 0; exScore = 0; exRes = {}; renderEx();
+  }catch(e){
+    const code = e && e.code;
+    const msg = code==="cancelled" ? "Gestopt." : code==="rate_limited" ? "Too many requests right now. Try again in a minute."
+      : (code==="not_granted"||code==="sampling_disabled") ? "Claude isn't allowed for this page, so exercises can't be made." : "Claude couldn't produce a usable set. Try again, or with fewer words.";
+    if(code==="not_granted"||code==="sampling_disabled") sample=null;
+    $("exArea").innerHTML = `<div class="ex-card"><p style="margin:0">${msg}</p></div>`;
+  }finally{ $("genBtn").disabled=false; }
+};
+
+function markWord(wordStr, ok){
+  const s = String(wordStr||"").toLowerCase().replace(/^(de|het)\s+/,"");
+  const w = words.find(x=>x.nl.toLowerCase()===s) || words.find(x=>s && (s.includes(x.nl.toLowerCase())||x.nl.toLowerCase().includes(s)));
+  if(!w) return;
+  const r = exRes[w.id] || (exRes[w.id] = {ok:0, wrong:0, known:false}); ok ? r.ok++ : r.wrong++;
+  const nw = {...w, ok:(w.ok||0)+(ok?1:0), wrong:(w.wrong||0)+(ok?0:1)};
+  if(!ok){ nw.box=1; nw.due=0; nw.unknown=true; }
+  putWord(nw);
+}
+function markKnown(id){
+  const w = words.find(x=>x.id===id); if(!w) return;
+  const box = Math.min(5, Math.max(2, (w.box||1)+1));
+  putWord({...w, unknown:false, box, due: Date.now()+IV[box]});
+  if(exRes[id]) exRes[id].known = true;
+}
+function renderResults(){
+  const area = $("exArea");
+  const rows = Object.entries(exRes).map(([id,r])=>({w:words.find(x=>x.id===id), r})).filter(x=>x.w)
+    .sort((a,b)=> b.r.wrong-a.r.wrong || a.w.nl.localeCompare(b.w.nl,"nl"));
+  const perfect = rows.filter(x=>!x.r.wrong && !x.r.known);
+  area.innerHTML = `<div class="ex-card" style="align-items:center;text-align:center"><span class="label">Resultaat</span><div class="score">${exScore} / ${exSet.length}</div>
+    <p class="note" style="margin:0">Missed words went back to box 1 and get extra questions next time. Study them on the cards, then mark them as known here or with “Weet ik”.</p>
+    <div class="res" id="resList">${rows.map(({w,r})=>`<div class="res-row" data-id="${w.id}"><span class="w">${artTag(w)}${esc(w.nl)}</span>
+      <span class="sc"><span class="g">${r.ok} goed</span>${r.wrong?` · <span class="f">${r.wrong} fout</span>`:""}</span>
+      ${r.known ? `<span class="known">✓ Gekend</span>` : `<button class="btn" data-k="${w.id}" style="padding:5px 10px">Gekend</button>`}</div>`).join("")}</div>
+    <div class="row" style="justify-content:center">
+      ${perfect.length ? `<button class="btn" id="exAllOk">Alle foutloze als gekend (${perfect.length})</button>` : ""}
+      <button class="btn primary" id="exAgain">Nieuwe set</button><button class="btn" id="exCards">Naar de kaarten</button></div></div>`;
+  $("resList").onclick = e => { const b=e.target.closest("[data-k]"); if(!b) return; markKnown(b.dataset.k); renderResults(); };
+  if($("exAllOk")) $("exAllOk").onclick = () => { perfect.forEach(x=>markKnown(x.w.id)); renderResults(); toast(`${perfect.length} gemarkeerd als gekend`); };
+  $("exAgain").onclick = () => $("genBtn").click();
+  $("exCards").onclick = () => $("t-cards").click();
+}
+function qHtml(t){ return esc(t).replace(/_{2,}/g,'<span class="blank">?</span>'); }
+function feedback(ok, x, sol){
+  return `<div class="fb ${ok?"ok":"no"}"><b>${ok?"Goed zo!":"Niet helemaal."}</b>${sol?`<div class="sol">${esc(sol)}</div>`:""}<div>${esc(x.explain||"")}</div></div>
+    <div class="row" style="justify-content:flex-end"><button class="btn primary" id="exNext">${exI+1<exSet.length?"Volgende":"Resultaat"}</button></div>`;
+}
+function renderEx(){
+  const area = $("exArea");
+  if(exI >= exSet.length){ renderResults(); return; }
+  const x = exSet[exI];
+  const head = `<div class="row" style="justify-content:space-between"><span class="qtype">${TYPE_LABEL[x.type]||x.type.toUpperCase()} · ${esc(x.word||"")}</span><span class="note" style="font-variant-numeric:tabular-nums">${exI+1} / ${exSet.length}</span></div>`;
+  if(x.type==="order"){
+    let built = [];
+    area.innerHTML = `<div class="ex-card">${head}<div class="ex-q">${esc(x.prompt)}</div><div class="tok-line" id="tokLine" aria-label="Jouw zin"></div>
+      <div class="chips" id="tokPool">${x.tokens.map((t,i)=>`<button class="tok" data-i="${i}">${esc(t)}</button>`).join("")}</div>
+      <div class="row" style="justify-content:flex-end"><button class="btn ghost" id="tokReset">Opnieuw</button><button class="btn primary" id="tokCheck">Controleer</button></div><div id="fbBox"></div></div>`;
+    const draw = () => {
+      $("tokLine").innerHTML = built.map((i,k)=>`<button class="tok" data-k="${k}">${esc(x.tokens[i])}</button>`).join("");
+      $("tokPool").querySelectorAll(".tok").forEach(b=>b.classList.toggle("used", built.includes(+b.dataset.i)));
+    };
+    $("tokPool").onclick = e => { const b=e.target.closest(".tok"); if(!b||built.includes(+b.dataset.i)) return; built.push(+b.dataset.i); draw(); };
+    $("tokLine").onclick = e => { const b=e.target.closest(".tok"); if(!b) return; built.splice(+b.dataset.k,1); draw(); };
+    $("tokReset").onclick = () => { built=[]; draw(); };
+    $("tokCheck").onclick = () => {
+      const norm = s => s.toLowerCase().replace(/[.,!?;:«»"]/g,"").replace(/\s+/g," ").trim();
+      const ok = norm(built.map(i=>x.tokens[i]).join(" ")) === norm(x.answer);
+      if(ok) exScore++; markWord(x.word, ok);
+      ["tokCheck","tokReset"].forEach(id=>$(id).disabled=true); $("tokPool").onclick=null; $("tokLine").onclick=null;
+      $("fbBox").innerHTML = feedback(ok, x, ok ? "" : x.answer);
+      $("exNext").onclick = () => { exI++; renderEx(); }; $("exNext").focus();
+    };
+    return;
+  }
+  area.innerHTML = `<div class="ex-card">${head}<div class="ex-q">${qHtml(x.prompt)}</div>
+    <div class="opts" id="opts">${x.options.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join("")}</div><div id="fbBox"></div></div>`;
+  $("opts").onclick = e => {
+    const b = e.target.closest(".opt"); if(!b || b.disabled) return;
+    const i = +b.dataset.i, ok = i===x.answer;
+    $("opts").querySelectorAll(".opt").forEach(o=>{ o.disabled=true; if(+o.dataset.i===x.answer) o.classList.add("right"); });
+    if(!ok) b.classList.add("wrong");
+    if(ok) exScore++; markWord(x.word, ok);
+    $("fbBox").innerHTML = feedback(ok, x, (x.type==="gap"||x.type==="prep"||x.type==="contrast") ? x.prompt.replace(/_{2,}/, x.options[x.answer]) : "");
+    $("exNext").onclick = () => { exI++; renderEx(); }; $("exNext").focus();
+  };
+}
+
+/* ---------- render ---------- */
+function renderAll(){
+  if(!current()) { const o=ordered(); curId = o[0] ? o[0].id : null; flipped=false; }
+  renderCard(); renderBoxes(); renderList(); renderExWords(); renderGroups();
+}
+renderAll();
+initStore();
+claude.use("sample").then(async s=>{
+  sample=s;
+  if(!s){ $("addNote").textContent="Words are added as typed: Claude isn't available in this view."; $("exNote").textContent="Exercises need Claude. Open this page in claude.ai."; $("regroupBtn").hidden=true; return; }
+  const lim = await s.limits().catch(()=>null);
+  imgLimits = lim && lim.images ? lim.images : null;
+  if(imgLimits){ $("photoLbl").hidden = false; $("photoIn").accept = imgLimits.mediaTypes.join(","); }
+}).catch(()=>{});
+claude.use("downloads").then(d=>{ downloads=d; }).catch(()=>{});
+})();
+</script>
+
+</body>
+</html>
