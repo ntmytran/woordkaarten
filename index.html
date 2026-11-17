@@ -273,6 +273,10 @@ body.pip .wd{font-size:clamp(22px,9vw,34px)}
         <button class="chip" aria-pressed="true" data-t="context">Welke context past?</button>
         <button class="chip" aria-pressed="true" data-t="contrast">Verwarbare woorden</button>
       </div>
+      <div class="chips" id="exTypesSep" hidden>
+        <button class="chip" aria-pressed="true" data-t="meaning">Betekenis</button>
+        <button class="chip" aria-pressed="true" data-t="sep">Scheidbaar of onscheidbaar?</button>
+      </div>
       <div class="row" style="justify-content:space-between">
         <span class="switch"><label for="exN">Aantal</label><select id="exN"><option>6</option><option selected>8</option><option>12</option></select></span>
         <button class="btn primary" id="genBtn">Maak oefeningen</button>
@@ -925,20 +929,77 @@ function makePlan(n){
 function renderExWords(){
   const V = vis(), nFocus = V.filter(isFocus).length;
   $("exMixNote").textContent = V.length ? `${chap==="all"?"alle hoofdstukken":chapLabel(chap)} · ${V.length} woorden · ${nFocus} nog niet gekend` : "";
+  const sm = isSepMode();
+  $("exTypes").hidden = sm; $("exTypesSep").hidden = !sm;
+  $("exNote").textContent = sm
+    ? "Only two things: what the verb means, and whether it is scheidbaar. Made straight from your cards, so no Claude needed. Words you marked “nog niet” get more questions."
+    : "Each set mixes all your words. Words you marked “nog niet” get more questions. The first time, Claude asks you to allow it.";
   if(!V.length){ $("exWords").innerHTML = `<span class="note">Add words first in the Woorden tab.</span>`; return; }
   const list = [...V].sort((a,b)=>(isFocus(b)-isFocus(a)) || a.nl.localeCompare(b.nl,"nl"));
   const shown = list.slice(0, 24);
   $("exWords").innerHTML = shown.map(w=>`<span class="mix${isFocus(w)?" focus":""}">${esc(w.nl)}${isFocus(w)?"<i>extra</i>":""}</span>`).join("")
     + (list.length>shown.length ? `<span class="mix"><i>+${list.length-shown.length} meer</i></span>` : "");
 }
+/* ---------- grammar chapter: meaning + scheidbaar only, built locally from the cards ---------- */
+function isSepMode(){ return chap!=="all" && /scheidba/i.test(chapNames[chap]||""); }
+const sepBase = w => String(w.nl).replace(/\s*\((on)?scheidbaar\)/i,"").trim();
+const sepPlain = w => sepBase(w).normalize("NFD").replace(/[\u0300-\u036f]/g,"").normalize("NFC");
+const sepEn = w => String(w.en||"").replace(/\s*—\s*stress on.*$/i,"").replace(/\s*\(strong verb\)/ig,"").trim();
+const isSep = w => /\(scheidbaar\)/i.test(w.forms||"") || /\(scheidbaar\)/i.test(w.nl);
+const pfx = w => (sepPlain(w).replace(/^zich\s+/,"").match(/^(voor|onder|over|door|om)/)||[""])[0];
+function sepExplain(w){
+  const sep = isSep(w);
+  return `${sepBase(w)} = ${sepEn(w)}. ${sep ? "Scheidbaar: klemtoon op het voorvoegsel, dus het splitst en krijgt ge-" : "Onscheidbaar: klemtoon op het werkwoord, dus het blijft samen en krijgt geen ge-"} (${String(w.forms||"").replace(/\s*\((on)?scheidbaar\)/ig,"").replace(/\s*—.*$/,"")}).${w.example ? " Bv. " + w.example : ""}`;
+}
+function pickOthers(w, pool, k, key){
+  const same = shuffle(pool.filter(o=>o.id!==w.id && pfx(o)===pfx(w)));
+  const rest = shuffle(pool.filter(o=>o.id!==w.id && pfx(o)!==pfx(w)));
+  const out = [], seen = new Set([key(w)]);
+  for(const o of same.concat(rest)){ const v = key(o); if(!seen.has(v)){ seen.add(v); out.push(o); } if(out.length>=k) break; }
+  return out;
+}
+function makeSepQuestion(w, kind, V){
+  if(kind==="meaning"){
+    if(Math.random() < 0.5){
+      const others = pickOthers(w, V, 3, sepEn);
+      const opts = shuffle([w, ...others]);
+      return {type:"meaning", word:w.nl, prompt:`Wat betekent «${sepBase(w)}»?`, options:opts.map(sepEn), answer:opts.indexOf(w), explain:sepExplain(w)};
+    }
+    const others = pickOthers(w, V, 3, sepBase);
+    const opts = shuffle([w, ...others]);
+    return {type:"meaning", word:w.nl, prompt:`Welk werkwoord betekent «${sepEn(w)}»?`, options:opts.map(sepBase), answer:opts.indexOf(w), explain:sepExplain(w)};
+  }
+  // kind === "sep"
+  if(Math.random() < 0.6){
+    return {type:"sep", word:w.nl, prompt:`Is «${sepPlain(w)}» (${sepEn(w)}) scheidbaar of onscheidbaar?`, options:["scheidbaar","onscheidbaar"], answer:isSep(w)?0:1, explain:sepExplain(w), keepOrder:true};
+  }
+  const want = isSep(w);
+  const others = shuffle(V.filter(o=>o.id!==w.id && isSep(o)!==want)).slice(0,3);
+  if(others.length < 3) return makeSepQuestion(w, "sep", []);   // fall back to the yes/no form
+  const opts = shuffle([w, ...others]);
+  return {type:"sep", word:w.nl, prompt:`Welk werkwoord is ${want ? "scheidbaar" : "onscheidbaar"}?`, options:opts.map(o=>`${sepPlain(o)} (${sepEn(o)})`), answer:opts.indexOf(w), explain:sepExplain(w)};
+}
+function buildSepSet(){
+  const types = [...$("exTypesSep").querySelectorAll('[aria-pressed="true"]')].map(c=>c.dataset.t);
+  if(!types.length){ $("exNote").textContent="Pick at least one exercise type."; return; }
+  const V = vis(); if(V.length < 4){ $("exNote").textContent="Add at least 4 verbs to this chapter first."; return; }
+  exPlan = makePlan(+$("exN").value);
+  let qs = [];
+  exPlan.forEach(p=>{ let t = Math.floor(Math.random()*types.length); for(let i=0;i<p.c;i++){ qs.push(makeSepQuestion(p.w, types[t % types.length], V)); t++; } });
+  qs = shuffle(qs);
+  for(let i=1;i<qs.length;i++){ if(qs[i].word===qs[i-1].word){ const j = qs.findIndex((q,k)=>k>i && q.word!==qs[i].word && (k+1>=qs.length || qs[k+1].word!==qs[i].word)); if(j>0) [qs[i],qs[j]]=[qs[j],qs[i]]; } }
+  exSet = qs; exI = 0; exScore = 0; exRes = {}; renderEx();
+}
+$("exTypesSep").onclick = e => { const c=e.target.closest(".chip"); if(!c) return; c.setAttribute("aria-pressed", c.getAttribute("aria-pressed")!=="true"); };
 $("exTypes").onclick = e => { const c=e.target.closest(".chip"); if(!c) return; c.setAttribute("aria-pressed", c.getAttribute("aria-pressed")!=="true"); };
 
-const TYPE_LABEL = {gap:"INVULOEFENING", prep:"VOORZETSEL", order:"WOORDVOLGORDE", context:"CONTEXT", contrast:"NIET VERWARREN"};
+const TYPE_LABEL = {gap:"INVULOEFENING", prep:"VOORZETSEL", order:"WOORDVOLGORDE", context:"CONTEXT", contrast:"NIET VERWARREN", meaning:"BETEKENIS", sep:"SCHEIDBAAR?"};
 function shuffle(a){ a=[...a]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 
 $("genBtn").onclick = async () => {
   const types = [...$("exTypes").querySelectorAll('[aria-pressed="true"]')].map(c=>c.dataset.t);
   if(!vis().length){ $("exNote").textContent="Add words first in the Woorden tab."; return; }
+  if(isSepMode()){ buildSepSet(); return; }
   if(!types.length){ $("exNote").textContent="Pick at least one exercise type."; return; }
   if(!sample){ $("exNote").textContent="Exercises need Claude, which isn't available in this view. Open the page in claude.ai."; return; }
   exPlan = makePlan(+$("exN").value);
